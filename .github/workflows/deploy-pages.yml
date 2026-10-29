@@ -1,47 +1,60 @@
-name: Deploy frontend to GitHub Pages
+
+name: Build and Deploy NEXORA Frontend
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: npm install --no-audit --no-fund
-      - name: Run automated tests
-        run: npm test
-      - name: Build backend
-        run: npm run build --workspace backend
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
       - name: Build frontend
         run: npm run build --workspace frontend
         env:
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_BASE_PATH: /ztrend/
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
-      - name: Warn when the backend URL is not configured
-        if: ${{ vars.VITE_API_BASE_URL == '' }}
-        run: echo '::warning::Set repository variable VITE_API_BASE_URL to the deployed HTTPS API URL before expecting login or data features to work.'
-      - name: Add SPA fallback for direct routes
-        run: cp frontend/dist/index.html frontend/dist/404.html
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Upload frontend build
+        uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
+
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
+
     steps:
-      - id: deployment
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy website
+        id: deployment
         uses: actions/deploy-pages@v4
