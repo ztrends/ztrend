@@ -21,10 +21,20 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
 app.use((req,res,next) => { res.setHeader('X-Content-Type-Options','nosniff'); res.setHeader('X-Frame-Options','DENY'); res.setHeader('Referrer-Policy','strict-origin-when-cross-origin'); next(); });
-app.get('/api/health', async (_req,res) => {
-  try { await query('SELECT 1'); res.json({status:'ok',database:'connected'}); }
-  catch { res.status(503).json({status:'degraded',database:'unavailable'}); }
+
+app.get('/api/health', async (_req, res) => {
+  try {
+    await query('SELECT 1');
+    res.json({ status: 'ok', database: 'connected' });
+  } catch (error) {
+    console.error('DATABASE CONNECTION ERROR:', error);
+    res.status(503).json({
+      status: 'degraded',
+      database: 'unavailable'
+    });
+  }
 });
+
 const loginSchema = z.object({ email:z.string().email().max(254), password:z.string().min(1).max(200), expectedType:z.enum(['FOUNDER','ADMIN','CUSTOMER']) });
 app.post('/api/auth/login', async (req,res,next) => {
   try {
