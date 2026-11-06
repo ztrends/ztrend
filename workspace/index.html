@@ -71,6 +71,73 @@ body[data-theme="dark"] .salesGraph,body[data-theme="dark"] .bestCard{background
 body[data-theme="dark"] .main>.actions #themeToggle{border-color:#ffffff35}
 @media(max-width:1000px){.sidebar{background:rgba(255,255,255,.72)}body[data-theme="dark"] .sidebar{background:rgba(15,21,31,.88)}}
 @media(max-width:560px){.main>.actions{width:100%;justify-content:flex-end}.card{border-radius:22px}}
+
+/* True Liquid Glass — achromatic transparent glass, no blue/pink/gold tint */
+:root{--bg:#e7e8e9;--line:rgba(255,255,255,.42);--text:#242629;--muted:#686b70;--lime:#55595e;--amber:#777b80;--shadow:0 18px 55px rgba(20,22,25,.12);--glass:rgba(255,255,255,.16);--glass-strong:rgba(255,255,255,.27);--stroke:rgba(255,255,255,.48);--ink:#242629;--sub:#686b70}
+body{background:radial-gradient(ellipse at 18% 12%,rgba(255,255,255,.78),transparent 34%),radial-gradient(ellipse at 82% 24%,rgba(255,255,255,.38),transparent 32%),linear-gradient(135deg,#d8dadd,#eceeef 52%,#d4d6d8);color:var(--ink)}
+body:before{opacity:.055;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:48px 48px}
+.sidebar{background:rgba(255,255,255,.13);border-right:1px solid rgba(255,255,255,.4);backdrop-filter:blur(38px) saturate(155%);-webkit-backdrop-filter:blur(38px) saturate(155%);box-shadow:12px 0 42px rgba(25,27,30,.06)}
+.brand{color:#242629}.brand i{color:#55595e}.eyebrow,.crumb{color:#73777c}
+.nav{color:#55595e}.nav b{color:#73777c}.nav:hover{background:rgba(255,255,255,.24);color:#202225}
+.nav.active{background:rgba(255,255,255,.27);border:1px solid rgba(255,255,255,.55);color:#202225;box-shadow:inset 0 1px rgba(255,255,255,.72),0 10px 28px rgba(20,22,25,.08)}
+.nav.active b{color:#303438}
+.sidefoot{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.42);color:#5d6166}
+.card,.loginbox,.modal{background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,.12));border:1px solid rgba(255,255,255,.52);border-radius:25px;box-shadow:0 18px 55px rgba(20,22,25,.11),inset 0 1px rgba(255,255,255,.58);backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%)}
+.stat{background:linear-gradient(145deg,rgba(255,255,255,.36),rgba(255,255,255,.13));border:1px solid rgba(255,255,255,.56);box-shadow:0 10px 28px rgba(20,22,25,.06),inset 0 1px rgba(255,255,255,.65)}
+.stat:nth-child(n){background:linear-gradient(145deg,rgba(255,255,255,.36),rgba(255,255,255,.13))}
+.stat:after{background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%)}
+.btn{background:rgba(255,255,255,.19);border:1px solid rgba(255,255,255,.55);color:#303438;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 5px 16px rgba(20,22,25,.05)}
+.btn:hover{background:rgba(255,255,255,.34);border-color:rgba(255,255,255,.72)}
+.btn.primary{background:rgba(35,38,42,.82);border-color:rgba(255,255,255,.25);color:#fff;box-shadow:0 9px 24px rgba(20,22,25,.18)}
+.field{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.52);color:#292c30;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.field:focus{border-color:rgba(70,74,79,.45);box-shadow:0 0 0 3px rgba(50,54,58,.08)}
+.field option{background:#e9eaeb;color:#292c30}
+.tablewrap{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.4)}
+th{color:#686c71;background:rgba(255,255,255,.16)}td{color:#34383c}th,td{border-bottom-color:rgba(255,255,255,.32)}tr:hover td{background:rgba(255,255,255,.18)}
+.pill{background:rgba(55,59,64,.09);color:#45494e}.pill.warn{background:rgba(160,116,45,.12);color:#785a2c}.pill.red{background:rgba(170,65,55,.11);color:#93483f}
+.notice{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.48);color:#55595e}
+.login{background:radial-gradient(ellipse at 15% 15%,rgba(255,255,255,.7),transparent 35%),radial-gradient(ellipse at 85% 78%,rgba(255,255,255,.32),transparent 36%),linear-gradient(135deg,#d8dadd,#eceeef)}
+.loginbox{color:#242629}.loginbox label{color:#55595e}.loginbox .field{background:rgba(255,255,255,.25);color:#242629}.loginbox .previewbtn{color:#303438;background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.5)}
+.modalback{background:rgba(25,27,30,.38);backdrop-filter:blur(16px)}
+.toast{background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.65);color:#292c30;backdrop-filter:blur(24px)}
+.previewbar{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.48);color:#4d5156}
+body[data-page="overview"] .salesGraph{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.45);border-radius:22px;backdrop-filter:blur(22px)}
+body[data-page="overview"] .bestCard{background:rgba(255,255,255,.17);border-color:rgba(255,255,255,.5)}
+body[data-page]:not([data-page="overview"]) #content>.card,body[data-page]:not([data-page="overview"]) #content>section.card{background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(255,255,255,.1));border-top:1px solid rgba(255,255,255,.62)}
+/* Dark mode keeps the same transparency; only the glass tint and backdrop change */
+body[data-theme="dark"]{--bg:#17191c;--line:rgba(255,255,255,.14);--text:#f1f2f3;--muted:#aeb1b5;--glass:rgba(255,255,255,.055);--glass-strong:rgba(255,255,255,.11);--stroke:rgba(255,255,255,.2);--ink:#f1f2f3;--sub:#aeb1b5;color:var(--ink);background:radial-gradient(ellipse at 18% 12%,rgba(255,255,255,.12),transparent 34%),radial-gradient(ellipse at 82% 24%,rgba(255,255,255,.07),transparent 32%),linear-gradient(135deg,#17191c,#222528 52%,#141619)}
+body[data-theme="dark"]:before{opacity:.045}
+body[data-theme="dark"] .sidebar{background:rgba(18,20,23,.25);border-color:rgba(255,255,255,.14)}
+body[data-theme="dark"] .brand,body[data-theme="dark"] .nav.active,body[data-theme="dark"] .cardhead h3,body[data-theme="dark"] .stat strong,body[data-theme="dark"] .modal h2{color:#f1f2f3}
+body[data-theme="dark"] .eyebrow,body[data-theme="dark"] .crumb{color:#aeb1b5}
+body[data-theme="dark"] .nav{color:#c4c7ca}body[data-theme="dark"] .nav b{color:#aeb1b5}
+body[data-theme="dark"] .nav:hover{background:rgba(255,255,255,.09);color:#fff}
+body[data-theme="dark"] .nav.active{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);box-shadow:inset 0 1px rgba(255,255,255,.18),0 10px 28px rgba(0,0,0,.2)}
+body[data-theme="dark"] .sidefoot{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.15);color:#c2c5c8}
+body[data-theme="dark"] .main:before{background:radial-gradient(ellipse at 72% 12%,rgba(255,255,255,.07),transparent 34%),radial-gradient(ellipse at 88% 84%,rgba(255,255,255,.04),transparent 30%)}
+body[data-theme="dark"] .card,body[data-theme="dark"] .loginbox,body[data-theme="dark"] .modal{background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.045));border-color:rgba(255,255,255,.19);box-shadow:0 18px 55px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.15)}
+body[data-theme="dark"] .stat,body[data-theme="dark"] .stat:nth-child(n){background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.045));border-color:rgba(255,255,255,.18)}
+body[data-theme="dark"] .muted,body[data-theme="dark"] .stat label,body[data-theme="dark"] .loginbox p,body[data-theme="dark"] .loginbox label{color:#b0b4b8}
+body[data-theme="dark"] .main>.actions{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);box-shadow:0 12px 36px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.12)}
+body[data-theme="dark"] .btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:#eceeef}
+body[data-theme="dark"] .btn:hover{background:rgba(255,255,255,.14)}
+body[data-theme="dark"] .btn.primary{background:rgba(245,246,247,.88);border-color:rgba(255,255,255,.42);color:#202225}
+body[data-theme="dark"] .field{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);color:#f1f2f3}
+body[data-theme="dark"] .field option{background:#25282b;color:#f1f2f3}
+body[data-theme="dark"] .tablewrap{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.16)}
+body[data-theme="dark"] th{background:rgba(255,255,255,.07);color:#b3b7bb}body[data-theme="dark"] td{color:#e0e2e4}
+body[data-theme="dark"] th,body[data-theme="dark"] td{border-bottom-color:rgba(255,255,255,.1)}body[data-theme="dark"] tr:hover td{background:rgba(255,255,255,.06)}
+body[data-theme="dark"] .pill{background:rgba(255,255,255,.1);color:#e0e2e4}
+body[data-theme="dark"] .notice{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#d1d3d5}
+body[data-theme="dark"] .login{background:radial-gradient(ellipse at 15% 15%,rgba(255,255,255,.1),transparent 35%),radial-gradient(ellipse at 85% 78%,rgba(255,255,255,.06),transparent 36%),linear-gradient(135deg,#17191c,#222528)}
+body[data-theme="dark"] .loginbox .field{background:rgba(255,255,255,.07);color:#f1f2f3}
+body[data-theme="dark"] .loginbox .previewbtn{color:#eceeef;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+body[data-theme="dark"] .modalback{background:rgba(0,0,0,.58)}
+body[data-theme="dark"] .toast{background:rgba(40,43,46,.78);border-color:rgba(255,255,255,.18);color:#f1f2f3}
+body[data-theme="dark"] .previewbar{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.17);color:#e0e2e4}
+body[data-theme="dark"] .salesGraph,body[data-theme="dark"] .bestCard{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
+@media(max-width:1000px){.sidebar{background:rgba(255,255,255,.22)}body[data-theme="dark"] .sidebar{background:rgba(18,20,23,.38)}}
+
 </style></head><body>
 <section id="login" class="login"><div class="loginbox"><div class="brand">ZTrend<i>.</i></div><div class="crumb">SECURE ADMIN WORKSPACE</div><h1>Welcome back.</h1><p>Sign in with your founder or staff account to manage the live store. Your API connection is configured in Settings.</p><label>API server URL<input id="apiUrl" class="field" placeholder="https://your-api-host.com" autocomplete="url"></label><label>Email address<input id="email" class="field" type="email" autocomplete="username" placeholder="admin@yourstore.com"></label><label>Password<input id="password" class="field" type="password" autocomplete="current-password" placeholder="Your password"></label><button id="loginBtn" class="btn primary">Sign in to workspace →</button><button id="previewBtn" class="btn previewbtn">Explore admin design preview ↗</button><p id="loginError" style="color:#ff9b90"></p><p class="muted">No demo account is provided. Use the founder account configured on your backend.</p></div></section>
 <div id="app" class="app hidden"><aside id="sidebar" class="sidebar"><div class="brand">ZTrend<i>.</i></div><div class="eyebrow">WORKSPACE</div><button class="nav active" data-page="overview"><b>◫</b>Overview</button><button class="nav" data-page="orders"><b>▤</b>Orders</button><button class="nav" data-page="products"><b>▧</b>Products</button><button class="nav" data-page="inventory"><b>▦</b>Inventory</button><div class="eyebrow">MANAGEMENT</div><button class="nav" data-page="categories"><b>◈</b>Categories</button><button class="nav" data-page="slides"><b>▣</b>Store slider</button><button class="nav" data-page="purchases"><b>⇄</b>Purchases & Suppliers</button><button class="nav" data-page="accounts"><b>₹</b>Accounts & GST</button><button class="nav" data-page="customers"><b>♧</b>Customers & CRM</button><button class="nav" data-page="marketing"><b>◇</b>Marketing & Coupons</button><button class="nav" data-page="social"><b>◎</b>Social Media</button><button class="nav" data-page="ai"><b>✧</b>AI Studio</button><div class="eyebrow">INSIGHTS & SYSTEM</div><button class="nav" data-page="reports"><b>▥</b>Reports</button><button class="nav" data-page="settings"><b>⚙</b>Settings</button><div class="sidefoot">Connected workspace<br><strong id="userEmail" style="color:#dce9df">—</strong><br><button id="logoutBtn" class="btn" style="margin-top:12px">Sign out</button></div></aside>
