@@ -5,6 +5,7 @@ import { requireAuth, allowRoles } from "../middleware/auth.js";
 
 const router = Router();
 const staff = ["FOUNDER","ADMIN","ORDER_MANAGER"];
+const orderReaders = [...staff,"ACCOUNTANT"];
 const checkoutSchema = z.object({
   items: z.array(z.object({ productId:z.string().uuid(), quantity:z.coerce.number().int().min(1).max(50) })).min(1).max(30),
   paymentMethod: z.enum(["RAZORPAY","UPI","COD"]),
@@ -73,7 +74,7 @@ router.get("/mine",requireAuth,async(req,res,next)=>{
   } catch(error){next(error);}
 });
 
-router.get("/",requireAuth,allowRoles(...staff),async(req,res,next)=>{
+router.get("/",requireAuth,allowRoles(...orderReaders),async(req,res,next)=>{
   try {
     const result=await query(
       `SELECT o.id,o.order_number,o.status,o.payment_status,o.payment_method,o.grand_total,o.created_at,
@@ -89,7 +90,7 @@ router.get("/",requireAuth,allowRoles(...staff),async(req,res,next)=>{
   } catch(error){next(error);}
 });
 
-router.get("/:id",requireAuth,allowRoles(...staff),async(req,res,next)=>{
+router.get("/:id",requireAuth,allowRoles(...orderReaders),async(req,res,next)=>{
   try {
     const parsed=z.string().uuid().safeParse(req.params.id);
     if(!parsed.success) return res.status(400).json({error:"Invalid order ID"});
