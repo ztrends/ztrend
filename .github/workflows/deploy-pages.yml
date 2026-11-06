@@ -25,10 +25,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Prepare separate experiences
         run: |
-          mkdir -p site/shop site/shk
+          mkdir -p site/shop site/shk site/assets
           cp storefront/index.html site/shop/index.html
           cp workspace/index.html site/shk/index.html
           cp index.html site/index.html
+          if [ -d assets ]; then cp -R assets/. site/assets/; fi
           cat > site/404.html <<'EOF'
           <!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZTrend</title><body style="font-family:system-ui;padding:40px;text-align:center"><h1>Page not found</h1><a href="./shop/">Open ZTrend Store</a></body></html>
           EOF
