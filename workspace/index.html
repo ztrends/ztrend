@@ -642,6 +642,33 @@ body[data-theme="dark"] .orderPanel .field{background:rgba(12,25,18,.52)!importa
  .orderItems{min-width:560px}
  .orderPanelHead{align-items:flex-start}
 }
+
+.dashGrid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:18px;margin-top:18px}
+.dashLower{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,1fr);gap:18px;margin-top:18px}
+.insightStrip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.insight{background:rgba(255,255,255,.54);border:1px solid rgba(255,255,255,.82);border-radius:14px;padding:15px;min-width:0}
+.insight small{display:block;color:#718077;font-size:9px;line-height:1.4}
+.insight b{display:block;margin-top:7px;font:700 15px Manrope;color:#284536;overflow-wrap:anywhere}
+.metricline{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid rgba(77,122,91,.12);font-size:11px;line-height:1.5}
+.metricline:last-child{border-bottom:0}.metricline b{font-weight:800;color:#2d4e39;text-align:right}
+.rank{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:rgba(53,140,95,.13);color:#2b8159;font-size:10px;font-weight:800}
+.barChart{height:210px;display:flex;align-items:end;gap:clamp(8px,2vw,22px);padding:18px 6px 0}
+.barcol{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px;min-width:0}
+.barcol strong{font-size:9px;color:#3b6d50;white-space:nowrap}
+.bartrack{height:145px;width:min(100%,36px);display:flex;align-items:end;background:rgba(57,118,76,.08);border-radius:9px;overflow:hidden}
+.bartrack i{display:block;width:100%;background:linear-gradient(180deg,#8bcda5,#347e59);border-radius:8px 8px 3px 3px;box-shadow:0 0 22px rgba(76,160,108,.18)}
+.barcol small{font-size:9px;color:#75847a}
+.dashTable{min-width:480px}
+@media(max-width:1000px){.dashGrid,.dashLower{grid-template-columns:1fr}}
+@media(max-width:560px){.dashGrid,.dashLower{grid-template-columns:1fr;gap:14px}.insightStrip{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.insight{padding:10px}.insight b{font-size:12px}.metricline{gap:8px}}
+body[data-theme="dark"] .insight{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.10)!important}
+body[data-theme="dark"] .insight small,body[data-theme="dark"] .barcol small{color:#abc1b1!important}
+body[data-theme="dark"] .insight b,body[data-theme="dark"] .metricline b{color:#e2f0e6!important}
+body[data-theme="dark"] .metricline{border-color:rgba(255,255,255,.10)!important}
+body[data-theme="dark"] .rank{background:rgba(106,183,132,.15)!important;color:#a6e1bb!important}
+body[data-theme="dark"] .barcol strong{color:#d2ead9!important}
+body[data-theme="dark"] .bartrack{background:rgba(255,255,255,.06)!important}
+body[data-theme="dark"] .bartrack i{background:linear-gradient(180deg,#a9dfba,#367957)!important}
 </style>
 </head><body>
 <section id="login" class="login"><div class="loginbox"><div class="brand">ZTrend<i>.</i></div><div class="crumb">SECURE ADMIN WORKSPACE</div><h1>Welcome back.</h1><p>Sign in with your founder or staff account to manage the live store. Your API connection is configured in Settings.</p><label>API server URL<input id="apiUrl" class="field" placeholder="https://your-api-host.com" autocomplete="url"></label><label>Email address<input id="email" class="field" type="email" autocomplete="username" placeholder="admin@yourstore.com"></label><label>Password<input id="password" class="field" type="password" autocomplete="current-password" placeholder="Your password"></label><button id="loginBtn" class="btn primary">Sign in to workspace →</button><button id="previewBtn" class="btn previewbtn">Explore admin design preview ↗</button><p id="loginError" style="color:#ff9b90"></p><p class="muted">No demo account is provided. Use the founder account configured on your backend.</p></div></section>
