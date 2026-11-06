@@ -34,9 +34,9 @@ router.get("/summary", async (_req,res,next) => {
       query(`SELECT to_char(month_start,'Mon YY') AS month,
         COALESCE(SUM(grand_total) FILTER(WHERE payment_status='PAID'),0) AS revenue,
         COUNT(*) AS orders FROM generate_series(date_trunc('month',CURRENT_DATE)-interval '5 months',
-        date_trunc('month',CURRENT_DATE),interval '1 month') month_start
-        LEFT JOIN orders o ON date_trunc('month',o.created_at)=month_start
-        GROUP BY month_start ORDER BY month_start`),
+        date_trunc('month',CURRENT_DATE),interval '1 month') AS months(month_start)
+        LEFT JOIN orders o ON date_trunc('month',o.created_at)=months.month_start
+        GROUP BY months.month_start ORDER BY months.month_start`),
       query(`SELECT i.product_name AS name,i.sku,SUM(i.quantity)::int AS units,
         SUM(i.line_total) AS revenue,SUM(i.unit_cost*i.quantity) AS estimated_cost
         FROM order_items i JOIN orders o ON o.id=i.order_id
