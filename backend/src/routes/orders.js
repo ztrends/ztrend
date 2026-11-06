@@ -77,10 +77,43 @@ router.get("/",requireAuth,allowRoles(...staff),async(req,res,next)=>{
   try {
     const result=await query(
       `SELECT o.id,o.order_number,o.status,o.payment_status,o.payment_method,o.grand_total,o.created_at,
-       u.name AS customer_name,u.email AS customer_email
-       FROM orders o LEFT JOIN customers c ON c.id=o.customer_id LEFT JOIN users u ON u.id=c.user_id
+       u.name AS customer_name,u.email AS customer_email,c.phone AS customer_phone,
+       COUNT(i.id)::int AS item_count
+       FROM orders o
+       LEFT JOIN customers c ON c.id=o.customer_id
+       LEFT JOIN users u ON u.id=c.user_id
+       LEFT JOIN order_items i ON i.order_id=o.id
+       GROUP BY o.id,u.name,u.email,c.phone
        ORDER BY o.created_at DESC LIMIT 200`);
     res.json({orders:result.rows});
+  } catch(error){next(error);}
+});
+
+router.get("/:id",requireAuth,allowRoles(...staff),async(req,res,next)=>{
+  try {
+    const parsed=z.string().uuid().safeParse(req.params.id);
+    if(!parsed.success) return res.status(400).json({error:"Invalid order ID"});
+    const result=await query(
+      `SELECT o.id,o.order_number,o.status,o.payment_status,o.payment_method,
+       o.subtotal,o.discount_total,o.tax_total,o.shipping_total,o.grand_total,
+       o.shipping_address,o.notes,o.created_at,o.updated_at,
+       u.name AS customer_name,u.email AS customer_email,
+       c.phone AS customer_phone,c.gstin AS customer_gstin,
+       c.billing_address,
+       COALESCE(json_agg(json_build_object(
+         'id',i.id,'productId',i.product_id,'name',i.product_name,'sku',i.sku,
+         'quantity',i.quantity,'unitPrice',i.unit_price,'unitCost',i.unit_cost,'lineTotal',i.line_total
+       )) FILTER(WHERE i.id IS NOT NULL),'[]'::json) AS items
+       FROM orders o
+       LEFT JOIN customers c ON c.id=o.customer_id
+       LEFT JOIN users u ON u.id=c.user_id
+       LEFT JOIN order_items i ON i.order_id=o.id
+       WHERE o.id=$1
+       GROUP BY o.id,u.name,u.email,c.phone,c.gstin,c.billing_address`,
+      [parsed.data]
+    );
+    if(!result.rows[0]) return res.status(404).json({error:"Order not found"});
+    res.json({order:result.rows[0]});
   } catch(error){next(error);}
 });
 
