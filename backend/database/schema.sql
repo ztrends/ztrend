@@ -103,3 +103,19 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS audit_logs_created_idx ON audit_logs(created_at DESC);
+
+
+CREATE TABLE IF NOT EXISTS store_slides (
+ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ title VARCHAR(180) NOT NULL DEFAULT '',
+ subtitle VARCHAR(300) NOT NULL DEFAULT '',
+ media_type VARCHAR(10) NOT NULL CHECK(media_type IN ('IMAGE','VIDEO')),
+ media_url TEXT NOT NULL,
+ cta_label VARCHAR(60) NOT NULL DEFAULT 'Shop now',
+ cta_url VARCHAR(500) NOT NULL DEFAULT '#new',
+ position INTEGER NOT NULL DEFAULT 0,
+ is_active BOOLEAN NOT NULL DEFAULT TRUE,
+ created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+ updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS store_slides_active_position_idx ON store_slides(is_active,position);
