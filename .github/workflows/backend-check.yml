@@ -1,0 +1,23 @@
+name: ZTrend Backend Checks
+on:
+  push:
+    branches: [main]
+    paths: ["backend/**", "package.json", ".github/workflows/backend-check.yml"]
+  pull_request:
+    branches: [main]
+    paths: ["backend/**", "package.json"]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: node --check backend/src/server.js
+      - run: node --check backend/src/routes/auth.js
+      - run: node --check backend/src/routes/products.js
+      - run: node --check backend/src/routes/orders.js
+      - run: node --check backend/src/routes/admin.js
+      - run: node --check backend/src/routes/categories.js
