@@ -18,7 +18,7 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
 const app = express();
 app.disable("x-powered-by");
 app.use(helmet());
-const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:5173,http://localhost:4000").split(",").map(s=>s.trim());
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:5173,http://localhost:4000,https://ztrends.github.io").split(",").map(s=>s.trim());
 app.use(cors({ origin(origin, callback) {
   if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
   return callback(new Error("Origin not allowed by CORS"));
