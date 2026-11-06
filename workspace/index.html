@@ -442,9 +442,6 @@ async function loadOverview(){
  const status=(d.orderStatuses||[]).map(x=>'<div class="metricline"><span>'+esc(x.status)+'</span><b>'+x.count+'</b></div>').join('')||'<div class="empty">No orders yet.</div>';
 
  $('#content').innerHTML=`
- <style>
- .heroDash{background:linear-gradient(115deg,#d6b87522,#b99a5c0c 55%,#fff0),linear-gradient(135deg,#ffffff12,#ffffff04);border:1px solid #d6b87532;border-radius:24px;padding:23px 25px;margin-bottom:16px;display:flex;justify-content:space-between;gap:15px;align-items:center}.heroDash h2{font:800 19px Manrope;margin:7px 0}.heroDash p{color:var(--muted);font-size:11px;margin:0}.liveTag{border:1px solid #9fe28b55;border-radius:99px;padding:7px 11px;color:#d6b875;font-size:10px;white-space:nowrap}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.stat{min-height:136px}.stat strong{font-size:25px}.stat small{display:block}.dashGrid{display:grid;grid-template-columns:1.5fr 1fr;gap:15px;margin-top:15px}.barChart{height:210px;display:flex;align-items:end;gap:clamp(8px,2vw,22px);padding:18px 6px 0}.barcol{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:8px;min-width:0}.barcol strong{font-size:9px;color:#d6c69e;white-space:nowrap}.bartrack{height:145px;width:min(100%,36px);display:flex;align-items:end;background:#ffffff08;border-radius:9px;overflow:hidden}.bartrack i{display:block;width:100%;background:linear-gradient(180deg,#ead8a8,#b99a5c);border-radius:8px 8px 3px 3px;box-shadow:0 0 22px #d6b87533}.barcol small{font-size:9px;color:var(--muted)}.metricline{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:11px}.metricline:last-child{border:0}.metricline b{font-weight:700}.rank{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:#d6b87518;color:var(--lime);font-size:10px}.dashLower{display:grid;grid-template-columns:1.25fr 1fr;gap:15px;margin-top:15px}.insightStrip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.insight{background:#ffffff08;border:1px solid var(--line);border-radius:13px;padding:13px}.insight small{display:block;color:var(--muted);font-size:9px}.insight b{display:block;margin-top:7px;font:700 15px Manrope}.card .cardhead{margin-bottom:12px}.dashTable{min-width:480px}@media(max-width:1000px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dashGrid,.dashLower{grid-template-columns:1fr}}@media(max-width:560px){.heroDash{align-items:flex-start;flex-direction:column;padding:18px}.stat strong{font-size:21px}.insightStrip{grid-template-columns:1fr 1fr 1fr}.insight{padding:9px}.insight b{font-size:12px}}
- </style>
  
  <div class="grid stats">
  <div class="card stat"><label>Paid revenue · all time</label><strong>${money(d.revenue.paid)}</strong><small>Successfully paid orders</small></div>
@@ -470,8 +467,135 @@ function showMoreBest(){document.querySelectorAll(".bestExtra").forEach(x=>x.cla
 function orderTable(rows){if(!rows.length)return '<div class="empty">No orders found in your database yet.</div>';return '<div class="tablewrap"><table><thead><tr><th>Order</th><th>Status</th><th>Payment</th><th>Total</th><th>Date</th></tr></thead><tbody>'+rows.map(o=>`<tr><td>#${esc(o.order_number)}</td><td><span class="pill">${esc(o.status)}</span></td><td>${esc(o.payment_status||'—')}</td><td>${money(o.grand_total)}</td><td>${new Date(o.created_at).toLocaleDateString('en-IN')}</td></tr>`).join('')+'</tbody></table></div>'}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function loadProducts(inventory=false){const d=await api('/products/admin/all');products=d.products||[];const rows=inventory?products.filter(p=>Number(p.stock)<=5):products;$('#content').innerHTML=`<div class="toolbar"><input id="productSearch" class="field" placeholder="Search name or SKU…"><select id="productFilter" class="field"><option value="">All statuses</option><option>ACTIVE</option><option>DRAFT</option><option>ARCHIVED</option></select><button class="btn primary" onclick="openProduct()">＋ New product</button></div><div class="card"><div class="cardhead"><h3>${inventory?'Low stock & inventory':'Product catalogue'}</h3><span class="muted">${rows.length} records</span></div><div id="productTable"></div></div>`;function draw(){const q=$('#productSearch').value.toLowerCase(),f=$('#productFilter').value;const list=rows.filter(p=>(!f||p.status===f)&&(!q||(p.name+' '+p.sku).toLowerCase().includes(q)));$('#productTable').innerHTML=list.length?'<div class="tablewrap"><table><thead><tr><th>Product</th><th>SKU</th><th>Price</th><th>Cost</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead><tbody>'+list.map(p=>`<tr><td><div class="productCell"><img src="${esc(p.imageUrl||'')}" onerror="this.style.display='none'" alt=""><span>${esc(p.name)}</span></div></td><td>${esc(p.sku)}</td><td>${money(p.price)}</td><td>${money(p.costPrice)}</td><td><span class="pill ${p.stock<=5?'warn':''}">${p.stock}</span></td><td>${esc(p.status)}</td><td><button class="btn" onclick="editProduct('${p.id}')">Edit</button></td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">No matching products. Add your first real product.</div>'}$('#productSearch').oninput=draw;$('#productFilter').onchange=draw;draw()}
-async function loadOrders(){const d=await api('/orders');orders=d.orders||[];$('#content').innerHTML='<div class="toolbar"><input id="orderSearch" class="field" placeholder="Search order number or customer…"></div><div class="card"><div class="cardhead"><h3>Order management</h3><span class="muted">'+orders.length+' latest orders</span></div><div id="ordersTable"></div></div>';function draw(){let list=orders.filter(o=>(String(o.order_number)+' '+(o.customer_name||'')).toLowerCase().includes($('#orderSearch').value.toLowerCase()));$('#ordersTable').innerHTML=list.length?'<div class="tablewrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Payment</th><th>Total</th><th>Status</th><th>Update</th></tr></thead><tbody>'+list.map(o=>`<tr><td>#${esc(o.order_number)}</td><td>${esc(o.customer_name||'Guest')}</td><td>${esc(o.payment_status)}</td><td>${money(o.grand_total)}</td><td>${esc(o.status)}</td><td><select class="field" style="padding:7px" onchange="updateOrder('${o.id}',this.value)"><option value="">Change…</option>${['CONFIRMED','PROCESSING','SHIPPED','DELIVERED','CANCELLED','RETURN_REQUESTED','RETURNED'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">No orders in database yet.</div>'}$('#orderSearch').oninput=draw;draw()}
-async function updateOrder(id,status){if(!status)return;try{await api('/orders/'+id+'/status',{method:'PATCH',body:JSON.stringify({status})});toast('Order status updated');await loadOrders()}catch(e){toast(e.message)}}
+async function loadOrders(){
+ const d=await api('/orders');orders=d.orders||[];activeOrder=null;
+ const open=orders.filter(o=>!['DELIVERED','CANCELLED','RETURNED'].includes(o.status)).length;
+ const shipped=orders.filter(o=>o.status==='SHIPPED').length;
+ const delivered=orders.filter(o=>o.status==='DELIVERED').length;
+ $('#content').innerHTML=`
+  <section class="ordersHero">
+   <div class="ordersHeroMark">ZT<span>↗</span></div>
+   <div class="ordersHeroCopy"><h2>Orders</h2><p>Customer orders, fulfilment and print desk</p></div>
+   <div class="ordersHeroStats">
+    <div><small>All orders</small><b>${orders.length}</b></div>
+    <div><small>In progress</small><b>${open}</b></div>
+    <div><small>Shipped</small><b>${shipped}</b></div>
+    <div><small>Delivered</small><b>${delivered}</b></div>
+   </div>
+  </section>
+  <section class="orderWorkspace">
+   <div class="orderToolbar">
+    <label class="orderSearch"><span>⌕</span><input id="orderSearch" class="field" placeholder="Search order, customer, email or phone"></label>
+    <select id="orderFilter" class="field orderFilter"><option value="">All statuses</option>${['PENDING','CONFIRMED','PROCESSING','SHIPPED','DELIVERED','CANCELLED','RETURN_REQUESTED','RETURNED'].map(x=>`<option>${x}</option>`).join('')}</select>
+    <span class="orderCount" id="orderCount">${orders.length} orders</span>
+   </div>
+   <div id="ordersTable"></div>
+  </section>`;
+ function draw(){
+  const q=$('#orderSearch').value.trim().toLowerCase(),filter=$('#orderFilter').value;
+  const list=orders.filter(o=>(!filter||o.status===filter)&&((o.order_number+' '+(o.customer_name||'')+' '+(o.customer_email||'')+' '+(o.customer_phone||'')).toLowerCase().includes(q)));
+  $('#orderCount').textContent=list.length+' of '+orders.length+' orders';
+  $('#ordersTable').innerHTML=list.length?`
+   <div class="orderTableScroll"><table class="ordersTable"><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Payment</th><th>Amount</th><th>Fulfilment</th><th></th></tr></thead>
+   <tbody>${list.map(o=>`<tr>
+    <td><div class="orderNumber">#ZT-${esc(o.order_number)}</div><small class="orderDate">${new Date(o.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</small></td>
+    <td><div class="orderCustomer">${esc(o.customer_name||'Customer')}</div><small class="orderDate">${esc(o.customer_phone||o.customer_email||'Contact not provided')}</small></td>
+    <td><span class="itemCount">${Number(o.item_count||0)} items</span></td>
+    <td><span class="paymentTag ${o.payment_status==='PAID'?'paid':o.payment_status==='FAILED'?'failed':'pending'}">${esc(o.payment_status||'PENDING')}</span><small class="orderDate">${esc(o.payment_method||'—')}</small></td>
+    <td><b class="orderAmount">${money(o.grand_total)}</b></td>
+    <td><span class="statusTag ${orderStatusClass(o.status)}">${esc(o.status)}</span></td>
+    <td><button class="btn orderViewBtn" onclick="openOrder('${o.id}')">View order <span>↗</span></button></td>
+   </tr>`).join('')}</tbody></table></div>`:'<div class="ordersEmpty"><span>▤</span><b>No matching orders</b><small>Try another order number, customer or status.</small></div>';
+ }
+ $('#orderSearch').oninput=draw;$('#orderFilter').onchange=draw;draw();
+}
+function orderStatusClass(status){return ({PENDING:'amber',CONFIRMED:'blue',PROCESSING:'violet',SHIPPED:'teal',DELIVERED:'green',CANCELLED:'red',RETURN_REQUESTED:'orange',RETURNED:'slate'})[status]||'slate'}
+function orderAddressParts(address){
+ const a=address&&typeof address==='object'?address:{};
+ const line1=a.addressLine1||a.address_line_1||a.address1||a.line1||a.street||a.address||'';
+ const line2=a.addressLine2||a.address_line_2||a.address2||a.line2||a.landmark||'';
+ const city=a.city||a.town||a.district||'',state=a.state||a.region||a.province||'';
+ const pin=a.pincode||a.pinCode||a.postalCode||a.postal_code||a.zip||'',country=a.country||'India';
+ return [line1,line2,[city,state,pin].filter(Boolean).join(', '),country].filter(Boolean);
+}
+function orderAddressHtml(address){const lines=orderAddressParts(address);return lines.length?lines.map(x=>`<div>${esc(x)}</div>`).join(''):'<span class="muted">Address not provided</span>'}
+async function openOrder(id){try{const d=await api('/orders/'+encodeURIComponent(id));activeOrder=d.order;renderOrderDetail()}catch(e){toast(e.message)}}
+function renderOrderDetail(){
+ const o=activeOrder;if(!o)return;
+ const phone=o.customer_phone||(o.shipping_address||{}).phone||(o.shipping_address||{}).mobile||'';
+ const itemRows=(o.items||[]).map((i,n)=>`<tr><td><span class="lineIndex">${String(n+1).padStart(2,'0')}</span></td><td><b>${esc(i.name)}</b><small class="lineSku">${esc(i.sku||'')}</small></td><td>${Number(i.quantity)}</td><td>${money(i.unitPrice)}</td><td><b>${money(i.lineTotal)}</b></td></tr>`).join('');
+ const statuses=['PENDING','CONFIRMED','PROCESSING','SHIPPED','DELIVERED','CANCELLED','RETURN_REQUESTED','RETURNED'];
+ $('#content').innerHTML=`
+  <div class="orderDetailTop"><button class="btn backOrders" onclick="loadOrders()">← All orders</button><div class="orderDetailActions"><button class="btn" onclick="printOrderDocument('invoice')">▤ Print bill</button><button class="btn primary" onclick="printOrderDocument('label')">▣ Print shipping sticker</button></div></div>
+  <section class="orderDetailHeading"><div><div class="orderEyebrow">ORDER DETAIL</div><h2>#ZT-${esc(o.order_number)}</h2><p>Placed ${new Date(o.created_at).toLocaleString('en-IN',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</p></div><div class="orderHeadingStatus"><span class="statusTag ${orderStatusClass(o.status)}">${esc(o.status)}</span><span class="paymentTag ${o.payment_status==='PAID'?'paid':'pending'}">${esc(o.payment_status)}</span></div></section>
+  <div class="orderDetailGrid">
+   <div class="orderDetailMain">
+    <section class="orderPanel"><div class="orderPanelHead"><div><small>ITEMS</small><h3>Order contents</h3></div><span class="itemCount">${(o.items||[]).length} line items</span></div>
+     <div class="orderItemsScroll"><table class="orderItems"><thead><tr><th>#</th><th>Product</th><th>Qty</th><th>Unit price</th><th>Total</th></tr></thead><tbody>${itemRows||'<tr><td colspan="5">No item details found.</td></tr>'}</tbody></table></div>
+     <div class="orderTotals"><div><span>Subtotal</span><b>${money(o.subtotal)}</b></div><div><span>Discount</span><b>− ${money(o.discount_total)}</b></div><div><span>Shipping</span><b>${money(o.shipping_total)}</b></div><div><span>Tax</span><b>${money(o.tax_total)}</b></div><div class="grand"><span>Order total</span><b>${money(o.grand_total)}</b></div></div>
+    </section>
+    ${o.notes?`<section class="orderPanel orderNotes"><div class="orderPanelHead"><div><small>CUSTOMER NOTE</small><h3>Order instructions</h3></div></div><p>${esc(o.notes)}</p></section>`:''}
+   </div>
+   <aside class="orderDetailSide">
+    <section class="orderPanel"><div class="orderPanelHead"><div><small>FULFILMENT</small><h3>Update order</h3></div><span class="panelIcon">↗</span></div>
+     <label class="orderFieldLabel">Order status<select class="field" id="detailOrderStatus">${statuses.map(x=>`<option value="${x}" ${o.status===x?'selected':''}>${x.replaceAll('_',' ')}</option>`).join('')}</select></label>
+     <button class="btn primary saveOrderStatus" onclick="updateOrder('${o.id}',$('#detailOrderStatus').value)">Save status</button>
+     <div class="orderMeta"><span>Payment method</span><b>${esc(o.payment_method||'—')}</b></div><div class="orderMeta"><span>Payment status</span><b>${esc(o.payment_status||'—')}</b></div>
+    </section>
+    <section class="orderPanel"><div class="orderPanelHead"><div><small>CUSTOMER</small><h3>${esc(o.customer_name||'Customer')}</h3></div><span class="panelIcon">◎</span></div><div class="customerContact">${esc(o.customer_email||'Email not provided')}</div><div class="customerContact">${esc(phone||'Phone not provided')}</div></section>
+    <section class="orderPanel"><div class="orderPanelHead"><div><small>SHIP TO</small><h3>Delivery address</h3></div><span class="panelIcon">⌖</span></div>
+     <div class="addressBlock"><b>${esc(o.shipping_address?.fullName||o.shipping_address?.name||o.customer_name||'')}</b>${orderAddressHtml(o.shipping_address)}${phone?`<div class="addressPhone">☎ ${esc(phone)}</div>`:''}</div>
+    </section>
+    <section class="orderPanel"><div class="orderPanelHead"><div><small>BILL TO</small><h3>Billing details</h3></div><span class="panelIcon">▤</span></div><div class="addressBlock">${orderAddressHtml(o.billing_address||o.shipping_address)}</div>${o.customer_gstin?`<div class="gstinLine">GSTIN · ${esc(o.customer_gstin)}</div>`:''}</section>
+   </aside>
+  </div>`;
+}
+function getBusinessProfile(){try{return {...{name:'ZTrend',phone:'',gstin:'',address:''},...JSON.parse(localStorage.getItem('ztrend_business_profile')||'{}')}}catch{return {name:'ZTrend',phone:'',gstin:'',address:''}}}
+function saveBusinessProfile(){
+ const p={name:$('#bpName').value.trim()||'ZTrend',phone:$('#bpPhone').value.trim(),gstin:$('#bpGstin').value.trim(),address:$('#bpAddress').value.trim()};
+ localStorage.setItem('ztrend_business_profile',JSON.stringify(p));toast('Invoice and dispatch details saved on this device');
+}
+function printOrderDocument(kind){
+ const o=activeOrder;if(!o){toast('Open an order first');return}
+ const p=getBusinessProfile(),ship=o.shipping_address||{},bill=o.billing_address||ship;
+ const phone=o.customer_phone||ship.phone||ship.mobile||'',ref='ZT-'+o.order_number,inv=kind==='invoice';
+ const from=[p.name,...(p.address?p.address.split(/\r?\n/).filter(Boolean):[]),p.phone?'Phone: '+p.phone:''].filter(Boolean);
+ const items=(o.items||[]).map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.name)}</b><small>${esc(x.sku||'')}</small></td><td>${Number(x.quantity)}</td><td>${money(x.unitPrice)}</td><td>${money(x.lineTotal)}</td></tr>`).join('');
+ const body=inv?`<main class="invoice">
+  <header class="invoiceHead"><div><div class="brand">${esc(p.name)}</div>${from.slice(1).map(x=>`<div>${esc(x)}</div>`).join('')}${p.gstin?`<div><b>GSTIN:</b> ${esc(p.gstin)}</div>`:''}</div>
+  <div class="invoiceTitle"><small>ORDER DOCUMENT</small><h1>INVOICE</h1><b>${esc(ref)}</b><span>${new Date(o.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span></div></header>
+  <div class="invoiceAddresses"><section><small>BILL TO</small><b>${esc(o.customer_name||'Customer')}</b>${orderAddressHtml(bill)}${o.customer_email?`<div>${esc(o.customer_email)}</div>`:''}${o.customer_gstin?`<div>GSTIN: ${esc(o.customer_gstin)}</div>`:''}</section>
+  <section><small>SHIP TO</small><b>${esc(ship.fullName||ship.name||o.customer_name||'Customer')}</b>${orderAddressHtml(ship)}${phone?`<div>${esc(phone)}</div>`:''}</section></div>
+  <table class="printItems"><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>${items}</tbody></table>
+  <div class="invoiceBottom"><div><small>PAYMENT</small><b>${esc(o.payment_method||'—')} · ${esc(o.payment_status||'PENDING')}</b><small>Order status: ${esc(o.status)}</small>${o.notes?`<small>Note: ${esc(o.notes)}</small>`:''}</div>
+  <div class="invoiceTotals"><div><span>Subtotal</span><b>${money(o.subtotal)}</b></div><div><span>Discount</span><b>− ${money(o.discount_total)}</b></div><div><span>Shipping</span><b>${money(o.shipping_total)}</b></div><div><span>Tax</span><b>${money(o.tax_total)}</b></div><div class="total"><span>Grand total</span><b>${money(o.grand_total)}</b></div></div></div>
+  <footer class="invoiceFoot">Thank you for shopping with ${esc(p.name)}.</footer></main>`:`<main class="shippingLabel">
+  <div class="labelBrand"><b>${esc(p.name)}</b><span>SHIPMENT LABEL</span></div>
+  <section class="labelFrom"><small>SHIP FROM</small><b>${esc(p.name)}</b>${p.address?p.address.split(/\r?\n/).filter(Boolean).map(x=>`<div>${esc(x)}</div>`).join(''):'<div>Sender address not configured</div>'}${p.phone?`<div>Phone: ${esc(p.phone)}</div>`:''}</section>
+  <div class="labelRule"></div><section class="labelTo"><small>SHIP TO</small><h1>${esc(ship.fullName||ship.name||o.customer_name||'Customer')}</h1>${orderAddressParts(ship).map(x=>`<div>${esc(x)}</div>`).join('')}${phone?`<strong>☎ ${esc(phone)}</strong>`:''}</section>
+  <div class="labelOrder"><div><small>ORDER ID</small><b>${esc(ref)}</b></div><div class="labelPay"><small>PAYMENT</small><b>${o.payment_method==='COD'&&o.payment_status!=='PAID'?'CASH ON DELIVERY':'PREPAID'}</b></div></div>
+  ${o.payment_method==='COD'&&o.payment_status!=='PAID'?`<div class="codAmount">COLLECT ₹${Number(o.grand_total||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>`:''}
+  <div class="labelBottom"><span>Items: ${(o.items||[]).reduce((n,x)=>n+Number(x.quantity||0),0)}</span><span>1 / 1</span></div></main>`;
+ const html=`<!doctype html><html><head><meta charset="utf-8"><title>${inv?'Invoice':'Shipping label'} ${esc(ref)}</title><style>
+ *{box-sizing:border-box}body{margin:0;font:13px Arial,sans-serif;color:#202729;background:#fff}.invoice{max-width:190mm;margin:0 auto;padding:16mm 14mm}
+ .invoiceHead{display:flex;justify-content:space-between;gap:24px;padding-bottom:24px;border-bottom:2px solid #263b35}.brand{font-size:25px;font-weight:800;margin-bottom:9px}.invoiceHead>div:first-child>div:not(.brand){font-size:11px;line-height:1.6;color:#5e6965}
+ .invoiceTitle{text-align:right;display:grid;justify-items:end;align-content:start;gap:5px}.invoiceTitle small,.invoiceAddresses small,.invoiceBottom small{font-size:9px;letter-spacing:1.2px;color:#76837d}.invoiceTitle h1{font-size:26px;letter-spacing:2px;margin:0;color:#24483d}.invoiceTitle b{font-size:14px}.invoiceTitle span{font-size:11px;color:#66716c}
+ .invoiceAddresses{display:grid;grid-template-columns:1fr 1fr;gap:25px;padding:22px 0}.invoiceAddresses section{font-size:11px;line-height:1.6}.invoiceAddresses section>*{display:block}.invoiceAddresses section b{font-size:13px;margin:6px 0}
+ .printItems{width:100%;border-collapse:collapse;margin:10px 0 24px}.printItems th{text-align:left;background:#eef2ef;padding:10px 8px;font-size:10px}.printItems td{border-bottom:1px solid #e2e7e3;padding:11px 8px;font-size:11px}.printItems td small{display:block;color:#78827d;margin-top:4px}
+ .invoiceBottom{display:flex;justify-content:space-between;gap:30px}.invoiceBottom>div:first-child{display:grid;align-content:start;gap:7px;font-size:11px}.invoiceTotals{width:250px}.invoiceTotals>div{display:flex;justify-content:space-between;padding:6px 0;font-size:11px}.invoiceTotals .total{border-top:2px solid #29483d;margin-top:6px;padding-top:12px;font-weight:800;font-size:14px}.invoiceFoot{text-align:center;margin-top:54px;padding-top:15px;border-top:1px solid #e4e8e5;color:#65716b;font-size:10px}
+ .shippingLabel{width:100mm;min-height:150mm;padding:7mm;border:1px solid #111;display:flex;flex-direction:column}.labelBrand{display:flex;justify-content:space-between;align-items:center;padding-bottom:5mm;border-bottom:2px solid #111}.labelBrand b{font-size:19px}.labelBrand span{font-size:8px;letter-spacing:1px}.labelFrom{padding:4mm 0;font-size:9px;line-height:1.45}.labelFrom small,.labelTo small,.labelOrder small{display:block;font-size:8px;letter-spacing:1px;font-weight:bold;color:#555;margin-bottom:2mm}.labelFrom b{display:block;font-size:11px;margin-bottom:1mm}.labelRule{border-top:1px dashed #777}
+ .labelTo{padding:5mm 0;line-height:1.5;font-size:12px}.labelTo h1{font-size:19px;line-height:1.18;margin:2mm 0;font-weight:800}.labelTo strong{display:block;margin-top:3mm;font-size:14px}.labelOrder{display:flex;justify-content:space-between;gap:5mm;padding:4mm 0;border-top:2px solid #111;border-bottom:2px solid #111}.labelOrder b{font-size:17px}.labelPay{text-align:right}.labelPay b{font-size:12px}.codAmount{margin:4mm 0;padding:3mm;text-align:center;background:#111;color:white;font-weight:800;font-size:17px}.labelBottom{display:flex;justify-content:space-between;margin-top:auto;padding-top:5mm;font-size:9px}
+ @page{size:${inv?'A4':'100mm 150mm'};margin:0}@media print{body{print-color-adjust:exact;-webkit-print-color-adjust:exact}.invoice{padding:14mm}.shippingLabel{border:0;min-height:150mm}}
+ </style></head><body>${body}</body></html>`;
+ const win=window.open('','_blank','width=900,height=800');if(!win){toast('Allow pop-ups for this site to print documents');return}
+ win.document.open();win.document.write(html);win.document.close();setTimeout(()=>{try{win.focus();win.print()}catch(e){toast('Print window could not open')}},350);
+}
+async function updateOrder(id,status){
+ if(!status)return;
+ try{const d=await api('/orders/'+id+'/status',{method:'PATCH',body:JSON.stringify({status})});toast('Order status updated');
+  if(activeOrder&&String(activeOrder.id)===String(id)){activeOrder.status=d.order.status;renderOrderDetail()}else await loadOrders();
+ }catch(e){toast(e.message)}
+}
 async function loadCategories(){const d=await api('/categories');categories=d.categories||[];$('#content').innerHTML='<div class="toolbar"><button class="btn primary" onclick="openCategory()">＋ Add category</button></div><div class="card"><div class="cardhead"><h3>Store categories</h3><span class="muted">'+categories.length+' categories</span></div>'+(categories.length?'<div class="tablewrap"><table><thead><tr><th>Name</th><th>Slug</th><th>Category ID</th></tr></thead><tbody>'+categories.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.slug)}</td><td>${esc(c.id)}</td></tr>`).join('')+'</tbody></table></div>':'<div class="empty">No categories created yet.</div>')+'</div>'}
 const roadmap={purchases:['Purchase orders','Suppliers','Goods received','Purchase cost'],accounts:['Sales ledger','Expenses','GST returns','Profit & loss'],customers:['Customer directory','Customer profile','Segments & loyalty','Support history'],marketing:['Coupon codes','Campaign calendar','Abandoned carts','Promotion performance'],social:['Connected channels','Product catalogue sync','Publishing calendar','Engagement insights'],ai:['Customer shopping assistant','Admin business analyst','Knowledge base','AI provider configuration'],reports:['Sales report','Product performance','Inventory valuation','Tax & finance exports']};
 function loadRoadmap(key){const cfg={purchases:{lead:'Procurement desk',desc:'Track vendor sourcing, purchase requests and stock receiving.',fields:['PO number','Supplier','Expected date','Items','Total','Status'],rows:['Create purchase order','Supplier directory','Goods received note'],action:'Create purchase order'},accounts:{lead:'Finance control centre',desc:'Review collections, operating costs, tax position and business margins.',fields:['Date','Reference','Account','Debit','Credit','Status'],rows:['Record an expense','Sales ledger','GST summary','Profit & loss'],action:'Record expense'},customers:{lead:'Customer relationship workspace',desc:'Understand repeat buyers, customer value and service history.',fields:['Customer','Orders','Lifetime spend','Last order','Segment'],rows:['Customer directory','High-value customers','New customers','Support follow-ups'],action:'Export customers'},marketing:{lead:'Growth & campaign studio',desc:'Manage offers, discount codes and campaign performance.',fields:['Campaign','Code','Discount','Redemptions','Validity','Status'],rows:['Create coupon','Campaign calendar','Abandoned carts','Promotion analytics'],action:'Create coupon'},social:{lead:'Social commerce hub',desc:'Prepare product feeds and manage connected social channels.',fields:['Channel','Account','Catalogue sync','Last sync','Status'],rows:['Connect Instagram','Connect Facebook','Product feed','Publishing calendar'],action:'Connect channel'},ai:{lead:'AI command studio',desc:'Configure business-aware assistants with controlled access to store information.',fields:['Assistant','Knowledge source','Model provider','Access scope','Status'],rows:['Customer shopping assistant','Founder business analyst','Knowledge base','AI settings'],action:'Configure assistant'},reports:{lead:'Business intelligence & exports',desc:'Explore sales trends, product performance, inventory and finance reports.',fields:['Report','Period','Records','Last generated','Action'],rows:['Sales performance','Product performance','Inventory valuation','GST & finance'],action:'Generate report'}};const c=cfg[key];$('#content').innerHTML='<section class="card" style="margin-bottom:15px"><div class="crumb">ZTREND / '+key.toUpperCase()+'</div><h2 style="font:800 22px Manrope;margin:9px 0">'+c.lead+'</h2><p class="muted" style="font-size:12px;margin:0">'+c.desc+'</p><div class="toolbar" style="margin:18px 0 0"><input class="field" placeholder="Search '+key+'…"><select class="field"><option>All statuses</option><option>Active</option><option>Pending</option><option>Completed</option></select><button class="btn primary" onclick="toast(\'This workflow will be enabled with its database module\')">＋ '+c.action+'</button></div></section><div class="grid modulegrid">'+c.rows.map((x,i)=>'<div class="card modulecard"><div class="crumb">WORKSPACE 0'+(i+1)+'</div><h3 style="margin-top:15px">'+x+'</h3><p>'+c.desc+'</p><span class="pill warn">Backend module pending</span></div>').join('')+'</div><section class="card" style="margin-top:15px"><div class="cardhead"><h3>'+c.lead+' · Workspace structure</h3><span class="pill warn">Awaiting module API</span></div><div class="tablewrap"><table><thead><tr>'+c.fields.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody><tr><td colspan="'+c.fields.length+'" class="empty">No live records yet. This area will populate from the connected company database once the module is implemented.</td></tr></tbody></table></div></section>'}
