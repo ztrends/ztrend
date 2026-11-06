@@ -78,7 +78,8 @@ router.get("/",requireAuth,allowRoles(...orderReaders),async(req,res,next)=>{
   try {
     const result=await query(
       `SELECT o.id,o.order_number,o.status,o.payment_status,o.payment_method,o.grand_total,o.created_at,
-       u.name AS customer_name,u.email AS customer_email,c.phone AS customer_phone,
+       COALESCE(NULLIF(o.shipping_address->>'fullName',''),NULLIF(o.shipping_address->>'name',''),u.name,'Customer') AS customer_name,
+       u.email AS customer_email,COALESCE(NULLIF(c.phone,''),NULLIF(o.shipping_address->>'phone',''),NULLIF(o.shipping_address->>'mobile',''),NULLIF(o.shipping_address->>'phoneNumber','')) AS customer_phone,
        COUNT(i.id)::int AS item_count
        FROM orders o
        LEFT JOIN customers c ON c.id=o.customer_id
@@ -98,8 +99,10 @@ router.get("/:id",requireAuth,allowRoles(...orderReaders),async(req,res,next)=>{
       `SELECT o.id,o.order_number,o.status,o.payment_status,o.payment_method,
        o.subtotal,o.discount_total,o.tax_total,o.shipping_total,o.grand_total,
        o.shipping_address,o.notes,o.created_at,o.updated_at,
-       u.name AS customer_name,u.email AS customer_email,
-       c.phone AS customer_phone,c.gstin AS customer_gstin,
+       COALESCE(NULLIF(o.shipping_address->>'fullName',''),NULLIF(o.shipping_address->>'name',''),u.name,'Customer') AS customer_name,
+       u.email AS customer_email,
+       COALESCE(NULLIF(c.phone,''),NULLIF(o.shipping_address->>'phone',''),NULLIF(o.shipping_address->>'mobile',''),NULLIF(o.shipping_address->>'phoneNumber','')) AS customer_phone,
+       c.gstin AS customer_gstin,
        c.billing_address,
        COALESCE(json_agg(json_build_object(
          'id',i.id,'productId',i.product_id,'name',i.product_name,'sku',i.sku,
