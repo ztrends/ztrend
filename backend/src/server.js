@@ -43,6 +43,25 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: process.env.NODE_ENV === "production" ? "Internal server error" : err.message });
 });
 
+try {
+  await pool.query(`CREATE TABLE IF NOT EXISTS store_slides (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title VARCHAR(180) NOT NULL DEFAULT '',
+    subtitle VARCHAR(300) NOT NULL DEFAULT '',
+    media_type VARCHAR(10) NOT NULL CHECK(media_type IN ('IMAGE','VIDEO')),
+    media_url TEXT NOT NULL,
+    cta_label VARCHAR(60) NOT NULL DEFAULT 'Shop now',
+    cta_url VARCHAR(500) NOT NULL DEFAULT '#new',
+    position INTEGER NOT NULL DEFAULT 0,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  )`);
+  await pool.query("CREATE INDEX IF NOT EXISTS store_slides_active_position_idx ON store_slides(is_active,position)");
+  console.log("Store slider schema ready.");
+} catch(error) {
+  console.warn("Store slider schema migration deferred:", error.message);
+}
 const port = Number(process.env.PORT) || 4000;
 const server = app.listen(port, () => console.log(`ZTrend API listening on ${port}`));
 async function shutdown() { server.close(); await pool.end(); process.exit(0); }
