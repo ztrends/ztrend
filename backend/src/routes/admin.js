@@ -14,7 +14,8 @@ router.get("/summary", async (_req,res,next) => {
         COALESCE(SUM(grand_total) FILTER(WHERE payment_status='PAID' AND created_at >= date_trunc('month',CURRENT_DATE)),0) AS month_revenue,
         COUNT(*) FILTER(WHERE created_at::date=CURRENT_DATE) AS today_orders,
         COUNT(*) FILTER(WHERE created_at >= date_trunc('month',CURRENT_DATE)) AS month_orders,
-        COALESCE(AVG(grand_total) FILTER(WHERE payment_status='PAID'),0) AS average_order_value
+        COALESCE(AVG(grand_total) FILTER(WHERE payment_status='PAID'),0) AS average_order_value,
+        COALESCE((SELECT SUM((i.unit_price-i.unit_cost)*i.quantity) FROM order_items i JOIN orders paid_orders ON paid_orders.id=i.order_id WHERE paid_orders.payment_status='PAID'),0) AS gross_profit
         FROM orders`),
       query(`SELECT COUNT(*) AS total,
         COUNT(*) FILTER(WHERE status IN ('PENDING','CONFIRMED','PROCESSING')) AS open,
@@ -51,7 +52,7 @@ router.get("/summary", async (_req,res,next) => {
     ]);
     const s=sales.rows[0],o=orders.rows[0],p=products.rows[0],iv=inventory.rows[0];
     res.json({
-      revenue:{paid:Number(s.paid_revenue),today:Number(s.today_revenue),month:Number(s.month_revenue)},
+      revenue:{paid:Number(s.paid_revenue),today:Number(s.today_revenue),month:Number(s.month_revenue),grossProfit:Number(s.gross_profit)},
       orders:{total:Number(o.total),open:Number(o.open),today:Number(s.today_orders),month:Number(s.month_orders),delivered:Number(o.delivered),cancelled:Number(o.cancelled),averageValue:Number(s.average_order_value)},
       products:{total:Number(p.total),active:Number(p.active),lowStock:Number(p.low_stock)},
       customers:{total:Number(customers.rows[0].total)},
