@@ -1,0 +1,14 @@
+import { Router } from "express";
+import { z } from "zod";
+import { query } from "../db.js";
+import { requireAuth, allowRoles } from "../middleware/auth.js";
+const router=Router();
+const staff=["FOUNDER","ADMIN"];
+const schema=z.object({title:z.string().trim().max(180).optional().default(""),subtitle:z.string().trim().max(300).optional().default(""),mediaType:z.enum(["IMAGE","VIDEO"]),mediaUrl:z.string().url().max(2000),ctaLabel:z.string().trim().max(60).optional().default("Shop now"),ctaUrl:z.string().trim().max(500).optional().default("#new"),position:z.coerce.number().int().min(0).max(999).optional().default(0),isActive:z.boolean().optional().default(true)});
+const fields='id,title,subtitle,media_type AS "mediaType",media_url AS "mediaUrl",cta_label AS "ctaLabel",cta_url AS "ctaUrl",position,is_active AS "isActive",created_at AS "createdAt"';
+router.get("/",async(_req,res,next)=>{try{const r=await query(`SELECT ${fields} FROM store_slides WHERE is_active=TRUE ORDER BY position,created_at DESC`);res.json({slides:r.rows})}catch(e){next(e)}});
+router.get("/admin/all",requireAuth,allowRoles(...staff),async(_req,res,next)=>{try{const r=await query(`SELECT ${fields} FROM store_slides ORDER BY position,created_at DESC`);res.json({slides:r.rows})}catch(e){next(e)}});
+router.post("/",requireAuth,allowRoles(...staff),async(req,res,next)=>{try{const s=schema.parse(req.body);const r=await query(`INSERT INTO store_slides(title,subtitle,media_type,media_url,cta_label,cta_url,position,is_active) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING ${fields}`,[s.title,s.subtitle,s.mediaType,s.mediaUrl,s.ctaLabel,s.ctaUrl,s.position,s.isActive]);res.status(201).json({slide:r.rows[0]})}catch(e){next(e)}});
+router.patch("/:id",requireAuth,allowRoles(...staff),async(req,res,next)=>{try{const s=schema.partial().parse(req.body);const map={title:"title",subtitle:"subtitle",mediaType:"media_type",mediaUrl:"media_url",ctaLabel:"cta_label",ctaUrl:"cta_url",position:"position",isActive:"is_active"};const keys=Object.keys(s);if(!keys.length)return res.status(400).json({error:"No slide fields supplied"});const values=keys.map(k=>s[k]);const sets=keys.map((k,i)=>map[k]+"=$"+(i+1));values.push(req.params.id);const r=await query(`UPDATE store_slides SET ${sets.join(",")},updated_at=NOW() WHERE id=$${values.length} RETURNING ${fields}`,values);if(!r.rows[0])return res.status(404).json({error:"Slide not found"});res.json({slide:r.rows[0]})}catch(e){next(e)}});
+router.delete("/:id",requireAuth,allowRoles(...staff),async(req,res,next)=>{try{const r=await query("DELETE FROM store_slides WHERE id=$1 RETURNING id",[req.params.id]);if(!r.rowCount)return res.status(404).json({error:"Slide not found"});res.json({deleted:true})}catch(e){next(e)}});
+export default router;
