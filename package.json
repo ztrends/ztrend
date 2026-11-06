@@ -1,0 +1,16 @@
+{
+  "name": "ztrend-commerce",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "start": "npm run start --workspace backend",
+    "dev": "npm run dev --workspace backend",
+    "db:init": "npm run db:init --workspace backend"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
