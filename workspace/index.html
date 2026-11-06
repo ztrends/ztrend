@@ -621,6 +621,27 @@ body[data-theme="dark"] .paymentTag.failed{background:rgba(188,85,75,.18);color:
 body[data-theme="dark"] .orderDetailHeading .statusTag,body[data-theme="dark"] .orderDetailHeading .paymentTag{background:rgba(255,255,255,.12);color:#fff}
 @media(max-width:1000px){.sidebar{background:rgba(241,248,243,.92)!important}}
 @media(max-width:650px){.card{padding:17px!important;border-radius:17px!important}.stat{min-height:120px;padding:17px!important}.ordersHero{padding:20px;border-radius:18px}.orderDetailGrid{grid-template-columns:1fr}}
+
+.orderWorkspace{background:rgba(255,255,255,.57);border:1px solid rgba(255,255,255,.88);border-radius:22px;overflow:hidden;box-shadow:0 15px 38px rgba(39,77,54,.075);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%)}
+.ordersTable tbody tr:last-child td{border-bottom:0!important}
+.orderPanel .field{width:100%}
+.orderDetailActions .btn{min-height:42px}
+.settingsCard .field{width:100%}
+.settingsCard textarea{font:inherit;resize:vertical}
+h1,h2,h3,p,small,label{overflow-wrap:break-word}
+.cardhead h3,.orderPanelHead h3,.settingsCardHead h3{line-height:1.4;max-width:100%}
+.orderTotals span,.orderMeta span{line-height:1.5}
+body[data-theme="dark"] .orderWorkspace{background:linear-gradient(145deg,rgba(48,73,57,.78),rgba(27,46,34,.84))!important;border-color:rgba(225,245,230,.12)!important}
+body[data-theme="dark"] .ordersTable td{color:#dce9e0!important}
+body[data-theme="dark"] .ordersTable .orderDate{color:#9eb4a5!important}
+body[data-theme="dark"] .orderPanel .muted{color:#afc5b5!important}
+body[data-theme="dark"] .orderPanel .field{background:rgba(12,25,18,.52)!important;color:#edf4ef!important}
+@media(max-width:560px){
+ .ordersTable{min-width:790px}
+ .ordersHeroStats>div{overflow:hidden}
+ .orderItems{min-width:560px}
+ .orderPanelHead{align-items:flex-start}
+}
 </style>
 </head><body>
 <section id="login" class="login"><div class="loginbox"><div class="brand">ZTrend<i>.</i></div><div class="crumb">SECURE ADMIN WORKSPACE</div><h1>Welcome back.</h1><p>Sign in with your founder or staff account to manage the live store. Your API connection is configured in Settings.</p><label>API server URL<input id="apiUrl" class="field" placeholder="https://your-api-host.com" autocomplete="url"></label><label>Email address<input id="email" class="field" type="email" autocomplete="username" placeholder="admin@yourstore.com"></label><label>Password<input id="password" class="field" type="password" autocomplete="current-password" placeholder="Your password"></label><button id="loginBtn" class="btn primary">Sign in to workspace →</button><button id="previewBtn" class="btn previewbtn">Explore admin design preview ↗</button><p id="loginError" style="color:#ff9b90"></p><p class="muted">No demo account is provided. Use the founder account configured on your backend.</p></div></section>
@@ -687,7 +708,7 @@ async function loadOrders(){
    <div class="ordersHeroMark">ZT<span>↗</span></div>
    <div class="ordersHeroCopy"><h2>Orders</h2><p>Customer orders, fulfilment and print desk</p></div>
    <div class="ordersHeroStats">
-    <div><small>All orders</small><b>${orders.length}</b></div>
+    <div><small>Loaded orders</small><b>${orders.length}</b></div>
     <div><small>In progress</small><b>${open}</b></div>
     <div><small>Shipped</small><b>${shipped}</b></div>
     <div><small>Delivered</small><b>${delivered}</b></div>
@@ -733,6 +754,7 @@ async function openOrder(id){try{const d=await api('/orders/'+encodeURIComponent
 function renderOrderDetail(){
  const o=activeOrder;if(!o)return;
  const phone=o.customer_phone||(o.shipping_address||{}).phone||(o.shipping_address||{}).mobile||'';
+ const billTo=o.billing_address&&Object.keys(o.billing_address).length?o.billing_address:o.shipping_address;
  const itemRows=(o.items||[]).map((i,n)=>`<tr><td><span class="lineIndex">${String(n+1).padStart(2,'0')}</span></td><td><b>${esc(i.name)}</b><small class="lineSku">${esc(i.sku||'')}</small></td><td>${Number(i.quantity)}</td><td>${money(i.unitPrice)}</td><td><b>${money(i.lineTotal)}</b></td></tr>`).join('');
  const statuses=['PENDING','CONFIRMED','PROCESSING','SHIPPED','DELIVERED','CANCELLED','RETURN_REQUESTED','RETURNED'];
  $('#content').innerHTML=`
@@ -756,7 +778,7 @@ function renderOrderDetail(){
     <section class="orderPanel"><div class="orderPanelHead"><div><small>SHIP TO</small><h3>Delivery address</h3></div><span class="panelIcon">⌖</span></div>
      <div class="addressBlock"><b>${esc(o.shipping_address?.fullName||o.shipping_address?.name||o.customer_name||'')}</b>${orderAddressHtml(o.shipping_address)}${phone?`<div class="addressPhone">☎ ${esc(phone)}</div>`:''}</div>
     </section>
-    <section class="orderPanel"><div class="orderPanelHead"><div><small>BILL TO</small><h3>Billing details</h3></div><span class="panelIcon">▤</span></div><div class="addressBlock">${orderAddressHtml(o.billing_address||o.shipping_address)}</div>${o.customer_gstin?`<div class="gstinLine">GSTIN · ${esc(o.customer_gstin)}</div>`:''}</section>
+    <section class="orderPanel"><div class="orderPanelHead"><div><small>BILL TO</small><h3>Billing details</h3></div><span class="panelIcon">▤</span></div><div class="addressBlock">${orderAddressHtml(billTo)}</div>${o.customer_gstin?`<div class="gstinLine">GSTIN · ${esc(o.customer_gstin)}</div>`:''}</section>
    </aside>
   </div>`;
 }
@@ -767,7 +789,7 @@ function saveBusinessProfile(){
 }
 function printOrderDocument(kind){
  const o=activeOrder;if(!o){toast('Open an order first');return}
- const p=getBusinessProfile(),ship=o.shipping_address||{},bill=o.billing_address||ship;
+ const p=getBusinessProfile(),ship=o.shipping_address||{},bill=o.billing_address&&Object.keys(o.billing_address).length?o.billing_address:ship;
  const phone=o.customer_phone||ship.phone||ship.mobile||'',ref='ZT-'+o.order_number,inv=kind==='invoice';
  const from=[p.name,...(p.address?p.address.split(/\r?\n/).filter(Boolean):[]),p.phone?'Phone: '+p.phone:''].filter(Boolean);
  const items=(o.items||[]).map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.name)}</b><small>${esc(x.sku||'')}</small></td><td>${Number(x.quantity)}</td><td>${money(x.unitPrice)}</td><td>${money(x.lineTotal)}</td></tr>`).join('');
