@@ -6,7 +6,7 @@
 <main class="main"><div class="mobilehead"><button id="menuBtn">☰ Menu</button><span class="brand" style="padding:0">ZTrend<i>.</i></span><button id="mobileLogout">↪</button></div><div class="actions" style="justify-content:flex-end;margin:0 0 20px"><button class="btn" id="refreshBtn">↻ Refresh</button><button class="btn primary" id="quickAdd">＋ Add product</button></div><div id="content"></div></main></div>
 <div id="modalBack" class="modalback hidden"><div class="modal"><div class="cardhead"><h2 id="modalTitle">Add product</h2><button class="btn" id="modalClose">✕</button></div><div id="modalBody"></div></div></div><div id="toast" class="toast hidden"></div>
 <script>
-const $=s=>document.querySelector(s);let API=localStorage.getItem('ztrend_api')||'';let token=localStorage.getItem('ztrend_token')||'';let user=null;let previewMode=false;let page='overview';let products=[],orders=[],categories=[];
+const $=s=>document.querySelector(s);let API=localStorage.getItem('ztrend_api')||'https://ztrend-backend.onrender.com';let token=localStorage.getItem('ztrend_token')||'';let user=null;let previewMode=false;let page='overview';let products=[],orders=[],categories=[];
 $('#apiUrl').value=API;
 function toast(s){$('#toast').textContent=s;$('#toast').classList.remove('hidden');setTimeout(()=>$('#toast').classList.add('hidden'),2800)}
 function money(v){return '₹'+Number(v||0).toLocaleString('en-IN',{maximumFractionDigits:2})}
