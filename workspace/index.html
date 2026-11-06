@@ -726,7 +726,30 @@ function editSlide(index){
 }
 async function moveSlide(i,delta){const j=i+delta;if(j<0||j>=slideRows.length)return;[slideRows[i],slideRows[j]]=[slideRows[j],slideRows[i]];slideRows.forEach((x,n)=>x.position=n+1);try{if(previewMode)localStorage.setItem('ztrend_preview_slides',JSON.stringify(slideRows));else await Promise.all(slideRows.map(x=>api('/slides/'+x.id,{method:'PATCH',body:JSON.stringify({position:x.position})})));renderSlides()}catch(e){toast(e.message);await loadSlides()}}
 async function deleteSlide(i){const x=slideRows[i];if(!confirm('Delete this slide?'))return;try{if(previewMode){slideRows.splice(i,1);localStorage.setItem('ztrend_preview_slides',JSON.stringify(slideRows))}else await api('/slides/'+x.id,{method:'DELETE'});renderSlides();toast('Slide deleted')}catch(e){toast(e.message)}}
-function loadSettings(){$('#content').innerHTML='<div class="card" style="max-width:650px"><div class="cardhead"><h3>API connection</h3><span class="pill">Private</span></div><p class="muted" style="font-size:11px;line-height:1.7">The admin workspace talks to your separately hosted backend. GitHub Pages only hosts this interface; it does not host the database or secrets.</p><label style="display:grid;gap:7px;font-size:11px;color:var(--muted)">Backend base URL<input id="settingsApi" class="field" value="'+esc(API)+'" placeholder="https://your-api-host.com"></label><div style="display:flex;gap:9px;margin-top:14px"><button class="btn primary" onclick="saveApi()">Save connection</button><button class="btn" onclick="testApi()">Test API health</button></div><p id="health" class="muted" style="font-size:11px"></p></div><div class="card" style="max-width:650px;margin-top:14px"><h3 style="font:600 14px Manrope">Session</h3><p class="muted" style="font-size:11px">Signed in as '+esc(user?.email||'')+' · '+esc(user?.role||'')+'</p><button class="btn danger" onclick="logout()">Sign out</button></div>'}
+function loadSettings(){
+ const bp=getBusinessProfile();
+ $('#content').innerHTML=`
+  <div class="settingsLayout">
+   <section class="settingsCard">
+    <div class="settingsCardHead"><div><small>CONNECTION</small><h3>API connection</h3></div><span class="settingsIcon">⌁</span></div>
+    <p class="muted">GitHub Pages hosts this workspace. Orders, products and customer records are served by the connected API.</p>
+    <label>Backend base URL<input id="settingsApi" class="field" value="${esc(API)}" placeholder="https://your-api-host.com"></label>
+    <div class="settingsActions"><button class="btn primary" onclick="saveApi()">Save connection</button><button class="btn" onclick="testApi()">Test API health</button></div><p id="health" class="muted"></p>
+   </section>
+   <section class="settingsCard">
+    <div class="settingsCardHead"><div><small>PRINTING</small><h3>Invoice & dispatch details</h3></div><span class="settingsIcon">▤</span></div>
+    <p class="muted">These details appear on printed bills and shipping stickers generated from this browser.</p>
+    <div class="profileFields">
+     <label>Business / store name<input id="bpName" class="field" value="${esc(bp.name)}" placeholder="ZTrend"></label>
+     <label>Contact phone<input id="bpPhone" class="field" value="${esc(bp.phone)}" placeholder="+91 ..."></label>
+     <label>GSTIN (optional)<input id="bpGstin" class="field" value="${esc(bp.gstin)}" placeholder="GSTIN"></label>
+     <label class="profileWide">Return / warehouse address<textarea id="bpAddress" class="field" rows="3" placeholder="Full address, city, state, PIN">${esc(bp.address)}</textarea></label>
+    </div>
+    <div class="settingsActions"><button class="btn primary" onclick="saveBusinessProfile()">Save print details</button></div>
+   </section>
+   <section class="settingsCard sessionCard"><div class="settingsCardHead"><div><small>ACCOUNT</small><h3>Session</h3></div><span class="settingsIcon">◎</span></div><p>Signed in as <b>${esc(user?.email||'')}</b> · ${esc(user?.role||'')}</p><button class="btn danger" onclick="logout()">Sign out</button></section>
+  </div>`;
+}
 function saveApi(){API=$('#settingsApi').value.trim().replace(/\/$/,'');localStorage.setItem('ztrend_api',API);toast('API URL saved')}
 async function testApi(){saveApi();$('#health').textContent='Checking…';try{const r=await fetch(API+'/api/health');const d=await r.json();$('#health').textContent='API: '+d.status+' · Database: '+d.database}catch(e){$('#health').textContent='Connection failed: '+e.message}}
 
