@@ -747,7 +747,8 @@ function orderAddressParts(address){
  const line2=a.addressLine2||a.address_line_2||a.address2||a.line2||a.landmark||'';
  const city=a.city||a.town||a.district||'',state=a.state||a.region||a.province||'';
  const pin=a.pincode||a.pinCode||a.postalCode||a.postal_code||a.zip||'',country=a.country||'India';
- return [line1,line2,[city,state,pin].filter(Boolean).join(', '),country].filter(Boolean);
+ const hasAddress=[line1,line2,city,state,pin,a.country].some(v=>String(v||'').trim());
+ return hasAddress?[line1,line2,[city,state,pin].filter(Boolean).join(', '),country].filter(Boolean):[];
 }
 function orderAddressHtml(address){const lines=orderAddressParts(address);return lines.length?lines.map(x=>`<div>${esc(x)}</div>`).join(''):'<span class="muted">Address not provided</span>'}
 async function openOrder(id){try{const d=await api('/orders/'+encodeURIComponent(id));activeOrder=d.order;renderOrderDetail()}catch(e){toast(e.message)}}
