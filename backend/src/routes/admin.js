@@ -38,11 +38,13 @@ router.get("/summary", async (_req,res,next) => {
         date_trunc('month',CURRENT_DATE),interval '1 month') AS months(month_start)
         LEFT JOIN orders o ON date_trunc('month',o.created_at)=months.month_start
         GROUP BY months.month_start ORDER BY months.month_start`),
-      query(`SELECT i.product_name AS name,i.sku,SUM(i.quantity)::int AS units,
-        SUM(i.line_total) AS revenue,SUM(i.unit_cost*i.quantity) AS estimated_cost
+      query(`SELECT i.product_name AS name,i.sku,COALESCE(p.image_url,'') AS "imageUrl",
+        SUM(i.quantity)::int AS units,SUM(i.line_total) AS revenue,
+        SUM(i.unit_cost*i.quantity) AS estimated_cost
         FROM order_items i JOIN orders o ON o.id=i.order_id
+        LEFT JOIN products p ON p.id=i.product_id
         WHERE o.payment_status='PAID' AND o.created_at>=date_trunc('month',CURRENT_DATE)-interval '5 months'
-        GROUP BY i.product_name,i.sku ORDER BY units DESC LIMIT 6`),
+        GROUP BY i.product_name,i.sku,p.image_url ORDER BY units DESC LIMIT 100`),
       query("SELECT payment_method AS method,COUNT(*) AS orders,COALESCE(SUM(grand_total) FILTER(WHERE payment_status='PAID'),0) AS paid FROM orders GROUP BY payment_method ORDER BY orders DESC"),
       query("SELECT status,COUNT(*) AS count FROM orders GROUP BY status ORDER BY count DESC"),
       query(`SELECT COALESCE(SUM(stock),0) AS units,
