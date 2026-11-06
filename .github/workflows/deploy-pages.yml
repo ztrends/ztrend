@@ -1,11 +1,8 @@
-name: Deploy ZTrend Live Preview
+name: Deploy ZTrend Store and Workspace
 
 on:
   push:
     branches: [main]
-    paths:
-      - "index.html"
-      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -26,25 +23,21 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-
-      - name: Prepare static storefront and admin preview
+      - name: Prepare separate experiences
         run: |
-          mkdir -p site
+          mkdir -p site/shop site/zt-workspace-6mQ8
+          cp storefront/index.html site/shop/index.html
+          cp workspace/index.html site/zt-workspace-6mQ8/index.html
           cp index.html site/index.html
           cat > site/404.html <<'EOF'
-          <!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZTrend</title><body style="font-family:system-ui;padding:40px;text-align:center"><h1>Page not found</h1><p><a href="./">Return to ZTrend preview</a></p></body></html>
+          <!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZTrend</title><body style="font-family:system-ui;padding:40px;text-align:center"><h1>Page not found</h1><a href="./shop/">Open ZTrend Store</a></body></html>
           EOF
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v5
         with:
           enablement: true
-
-      - name: Upload website artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: site
-
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
