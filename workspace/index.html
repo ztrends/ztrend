@@ -1055,11 +1055,14 @@ body[data-theme="dark"] .signed-value.negative{color:#ff8585!important}
 @media(max-width:760px){.brand.brandLogo{padding-bottom:0}.sidebar .brand.brandLogo img{max-width:190px}}
 </style>
 <style id="ztrend-icon-only-medium">
-.brand.brandLogo{width:62px!important;height:58px!important;min-height:58px!important;max-width:62px!important;overflow:hidden!important;flex:0 0 62px!important;padding:0!important;justify-content:flex-start!important;}
-.brand.brandLogo img{width:150px!important;height:60px!important;max-width:none!important;max-height:none!important;object-fit:fill!important;object-position:left center!important;transform:translateX(-7px);}
-.loginbox .brand.brandLogo{width:62px!important;height:58px!important;min-height:58px!important;margin:0 auto 12px!important;justify-content:flex-start!important;}
-.mobilehead .brand.brandLogo{width:52px!important;height:48px!important;min-height:48px!important;flex:0 0 52px!important;}
-.mobilehead .brand.brandLogo img{width:150px!important;height:60px!important;max-width:none!important;max-height:none!important;}
+.brand.brandLogo{width:58px!important;height:58px!important;min-height:58px!important;max-width:58px!important;overflow:hidden!important;flex:0 0 58px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+.brand.brandLogo img{display:block!important;width:54px!important;height:54px!important;max-width:54px!important;max-height:54px!important;object-fit:contain!important;object-position:center!important;transform:none!important;}
+.loginbox .brand.brandLogo{width:62px!important;height:62px!important;min-height:62px!important;margin:0 auto 12px!important;justify-content:center!important;}
+.loginbox .brand.brandLogo img{width:58px!important;height:58px!important;max-width:58px!important;max-height:58px!important;}
+.mobilehead .brand.brandLogo{width:48px!important;height:48px!important;min-height:48px!important;flex:0 0 48px!important;}
+.mobilehead .brand.brandLogo img{width:44px!important;height:44px!important;max-width:44px!important;max-height:44px!important;}
+footer .brand.brandLogo{width:52px!important;height:52px!important;min-height:52px!important;max-width:52px!important;flex:0 0 52px!important;}
+footer .brand.brandLogo img{width:48px!important;height:48px!important;max-width:48px!important;max-height:48px!important;}
 </style>
 </head><body>
 <section id="login" class="login"><div class="loginbox"><div class="brand brandLogo"><img src="../assets/logo.png" alt="ZTrend"></div><div class="crumb">SECURE ADMIN WORKSPACE</div><h1>Welcome back.</h1><p>Sign in with your founder or staff account to manage the live store. Your API connection is configured in Settings.</p><label>API server URL<input id="apiUrl" class="field" placeholder="https://your-api-host.com" autocomplete="url"></label><label>Email address<input id="email" class="field" type="email" autocomplete="username" placeholder="admin@yourstore.com"></label><label>Password<input id="password" class="field" type="password" autocomplete="current-password" placeholder="Your password"></label><button id="loginBtn" class="btn primary">Sign in to workspace →</button><button id="previewBtn" class="btn previewbtn">Explore admin design preview ↗</button><p id="loginError" style="color:#ff9b90"></p><p class="muted">No demo account is provided. Use the founder account configured on your backend.</p></div></section>
