@@ -4,7 +4,7 @@ import {query} from "../db.js";
 import {requireAuth,allowRoles} from "../middleware/auth.js";
 const router=Router();
 const fields='id,name,slug,parent_id AS "parentId",image_url AS "imageUrl",position,is_active AS "isActive"';
-router.get("/",async(_req,res,next)=>{try{const r=await query(`SELECT ${fields} FROM categories WHERE is_active=TRUE ORDER BY position,name`);res.json({categories:r.rows});}catch(e){next(e);}});
+router.get("/",async(_req,res,next)=>{try{const r=await query(`SELECT ${fields} FROM categories ORDER BY position,name`);res.json({categories:r.rows});}catch(e){next(e);}});
 router.post("/",requireAuth,allowRoles("FOUNDER","ADMIN"),async(req,res,next)=>{try{
  const d=z.object({name:z.string().trim().min(2).max(120),slug:z.string().trim().regex(/^[a-z0-9-]+$/),imageUrl:z.string().trim().url().max(1000),position:z.number().int().min(0).optional(),isActive:z.boolean().optional()}).parse(req.body);
  const r=await query(`INSERT INTO categories(name,slug,image_url,position,is_active) VALUES($1,$2,$3,$4,$5) RETURNING ${fields}`,[d.name,d.slug,d.imageUrl,d.position??0,d.isActive??true]);
