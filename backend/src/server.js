@@ -71,8 +71,22 @@ try {
     ["Jackets","jackets","https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&auto=format&fit=crop&q=85",6],
     ["Joggers","joggers","https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&auto=format&fit=crop&q=85",7]
   ];
-  for (const [name,slug,imageUrl,position] of defaultCategories) {
-    await pool.query("INSERT INTO categories(name,slug,image_url,position,is_active) VALUES($1,$2,$3,$4,TRUE) ON CONFLICT(slug) DO UPDATE SET image_url=CASE WHEN categories.image_url='' THEN EXCLUDED.image_url ELSE categories.image_url END,position=EXCLUDED.position",[name,slug,imageUrl,position]);
+  // One-time cleanup: replace the old demo category catalogue with the real
+  // seven categories already used by the ZTrend storefront. Future admin edits
+  // are preserved on subsequent server starts.
+  await pool.query(`CREATE TABLE IF NOT EXISTS ztrend_migrations (key VARCHAR(120) PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`);
+  const categoryMigration = await pool.query("SELECT key FROM ztrend_migrations WHERE key='replace_demo_categories_with_store_catalogue_v1'");
+  if (!categoryMigration.rowCount) {
+    await pool.query("DELETE FROM categories");
+    for (const [name,slug,imageUrl,position] of defaultCategories) {
+      await pool.query("INSERT INTO categories(name,slug,image_url,position,is_active) VALUES($1,$2,$3,$4,TRUE)",[name,slug,imageUrl,position]);
+    }
+    await pool.query("INSERT INTO ztrend_migrations(key) VALUES('replace_demo_categories_with_store_catalogue_v1')");
+    console.log("Old demo categories replaced with the seven ZTrend storefront categories.");
+  } else {
+    for (const [name,slug,imageUrl,position] of defaultCategories) {
+      await pool.query("INSERT INTO categories(name,slug,image_url,position,is_active) VALUES($1,$2,$3,$4,TRUE) ON CONFLICT(slug) DO UPDATE SET image_url=CASE WHEN categories.image_url='' THEN EXCLUDED.image_url ELSE categories.image_url END,position=EXCLUDED.position",[name,slug,imageUrl,position]);
+    }
   }
   console.log("Category catalogue schema and defaults ready.");
 
