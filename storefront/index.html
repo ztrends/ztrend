@@ -220,19 +220,11 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
 </script><script id="ztrend-live-category-catalog">
 (()=>{const host=document.getElementById('categoryCatalog');if(!host)return;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-fetch('https://ztrend-backend.onrender.com/api/categories').then(r=>{if(!r.ok)throw Error('categories unavailable');return r.json()}).then(d=>{
+host.innerHTML='<div class="category-loading" role="status">Loading categories…</div>';
+fetch('https://ztrend-backend.onrender.com/api/categories',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('categories unavailable');return r.json()}).then(d=>{
  const list=(d.categories||[]).filter(x=>x.isActive!==false).sort((a,b)=>(a.position||0)-(b.position||0));
- if(!list.length)return;
- host.innerHTML=list.map(x=>'<a class="cat" href="#new" aria-label="'+esc(x.name)+'"><img src="'+esc(x.imageUrl||'')+'" alt="'+esc(x.name)+'" loading="lazy"><span>'+esc(x.name)+'</span></a>').join('');
-}).catch(()=>{const defaults=[
-{name:'Men',imageUrl:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=85'},
-{name:'Women',imageUrl:'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&auto=format&fit=crop&q=85'},
-{name:'Travel',imageUrl:'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&auto=format&fit=crop&q=85'},
-{name:'Hoodies',imageUrl:'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&auto=format&fit=crop&q=85'},
-{name:'Sweatshirts',imageUrl:'https://images.unsplash.com/photo-1578681994506-b8f463449011?w=600&auto=format&fit=crop&q=85'},
-{name:'Jackets',imageUrl:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&auto=format&fit=crop&q=85'},
-{name:'Joggers',imageUrl:'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&auto=format&fit=crop&q=85'}];
-host.innerHTML=defaults.map(x=>'<a class="cat" href="#new" aria-label="'+esc(x.name)+'"><img src="'+esc(x.imageUrl)+'" alt="'+esc(x.name)+'" loading="lazy"><span>'+esc(x.name)+'</span></a>').join('')});
+ host.innerHTML=list.length?list.map(x=>'<a class="cat" href="#new" data-category-id="'+esc(x.id)+'" data-category-slug="'+esc(x.slug)+'" aria-label="'+esc(x.name)+'"><img src="'+esc(x.imageUrl||'')+'" alt="'+esc(x.name)+'" loading="lazy"><span>'+esc(x.name)+'</span></a>').join(''):'<div class="category-empty">Categories will appear here soon.</div>';
+}).catch(()=>{host.innerHTML='<div class="category-empty">Categories are temporarily unavailable. Please try again shortly.</div>'});
 })();
 </script><script id="ztrend-category-carousel-motion">
 (()=>{const init=()=>{const rail=document.getElementById('categoryCatalog');if(!rail||rail.dataset.carouselReady)return;rail.dataset.carouselReady='1';let timer=null,paused=false;
