@@ -17,7 +17,7 @@ const loginSchema = z.object({
 });
 
 function issueToken(user) {
-  return jwt.sign({ sub: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h", issuer: "ztrend-api", audience: "ztrend-app" });
+  return jwt.sign({ sub: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: "30d", issuer: "ztrend-api", audience: "ztrend-app" });
 }
 function publicUser(user) {
   return { id: user.id, name: user.name, email: user.email, role: user.role, status: user.status };
