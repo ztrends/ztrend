@@ -191,7 +191,7 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
   const searchInputs=[document.getElementById('desktopSearch'),document.getElementById('mobileSearch')].filter(Boolean);
   const runSearch=value=>{const q=String(value||'').trim().toLowerCase();document.querySelectorAll('.product').forEach(card=>{card.style.display=!q||card.textContent.toLowerCase().includes(q)?'':'none'});};
   searchInputs.forEach(input=>input.addEventListener('input',()=>{runSearch(input.value);searchInputs.forEach(other=>{if(other!==input)other.value=input.value})}));
-  const api='https://ztrend-backend.onrender.com/api/slides';
+  const api='https://ztrend-backend-dk4m.onrender.com/api/slides';
  const hero=document.getElementById('storeHero');
  if(!hero)return;
  const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -221,7 +221,7 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
 (()=>{const host=document.getElementById('categoryCatalog');if(!host)return;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 host.innerHTML='<div class="category-loading" role="status">Loading categories…</div>';
-fetch('https://ztrend-backend.onrender.com/api/categories',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('categories unavailable');return r.json()}).then(d=>{
+fetch('https://ztrend-backend-dk4m.onrender.com/api/categories',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('categories unavailable');return r.json()}).then(d=>{
  const list=(d.categories||[]).filter(x=>x.isActive!==false).sort((a,b)=>(a.position||0)-(b.position||0));
  host.innerHTML=list.length?list.map(x=>'<a class="cat" href="#new" data-category-id="'+esc(x.id)+'" data-category-slug="'+esc(x.slug)+'" aria-label="'+esc(x.name)+'"><img src="'+esc(x.imageUrl||'')+'" alt="'+esc(x.name)+'" loading="lazy"><span>'+esc(x.name)+'</span></a>').join(''):'<div class="category-empty">Categories will appear here soon.</div>';
 }).catch(()=>{host.innerHTML='<div class="category-empty">Categories are temporarily unavailable. Please try again shortly.</div>'});
