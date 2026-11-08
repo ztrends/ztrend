@@ -58,6 +58,23 @@ try {
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   )`);
   await pool.query("CREATE INDEX IF NOT EXISTS store_slides_active_position_idx ON store_slides(is_active,position)");
+  await pool.query("ALTER TABLE categories ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT ''");
+  await pool.query("ALTER TABLE categories ADD COLUMN IF NOT EXISTS position INTEGER NOT NULL DEFAULT 0");
+  await pool.query("ALTER TABLE categories ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE");
+  const defaultCategories = [
+    ["Men","men","https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=85",1],
+    ["Women","women","https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&auto=format&fit=crop&q=85",2],
+    ["Travel","travel","https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&auto=format&fit=crop&q=85",3],
+    ["Hoodies","hoodies","https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&auto=format&fit=crop&q=85",4],
+    ["Sweatshirts","sweatshirts","https://images.unsplash.com/photo-1578681994506-b8f463449011?w=600&auto=format&fit=crop&q=85",5],
+    ["Jackets","jackets","https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&auto=format&fit=crop&q=85",6],
+    ["Joggers","joggers","https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&auto=format&fit=crop&q=85",7]
+  ];
+  for (const [name,slug,imageUrl,position] of defaultCategories) {
+    await pool.query("INSERT INTO categories(name,slug,image_url,position,is_active) VALUES($1,$2,$3,$4,TRUE) ON CONFLICT(slug) DO UPDATE SET image_url=CASE WHEN categories.image_url='' THEN EXCLUDED.image_url ELSE categories.image_url END,position=EXCLUDED.position",[name,slug,imageUrl,position]);
+  }
+  console.log("Category catalogue schema and defaults ready.");
+
   console.log("Store slider schema ready.");
 } catch(error) {
   console.warn("Store slider schema migration deferred:", error.message);
