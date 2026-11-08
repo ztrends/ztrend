@@ -1076,9 +1076,12 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
 
 </style><style id="ztrend-sidebar-logo-final-fix">
 .sidebar{padding-top:0!important}
-.sidebar .brand.brandLogo{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:140px!important;min-height:140px!important;max-height:140px!important;flex:0 0 140px!important;margin:0!important;padding:0!important;overflow:hidden!important}
-.sidebar .brand.brandLogo img{display:block!important;width:140px!important;height:140px!important;max-width:140px!important;max-height:140px!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important}
+.sidebar .brand.brandLogo{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:84px!important;min-height:84px!important;max-height:84px!important;flex:0 0 84px!important;margin:0!important;padding:0!important;overflow:hidden!important}
+.sidebar .brand.brandLogo img{display:block!important;width:140px!important;height:140px!important;max-width:140px!important;max-height:140px!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important;clip-path:inset(22% 0 22% 0)!important}
 .sidebar>.eyebrow:first-of-type{padding-top:0!important;margin-top:0!important}
+.main{padding-top:8px!important}
+.main>.actions{margin-bottom:8px!important}
+.previewbar{margin-top:0!important;margin-bottom:10px!important}
 </style></head><body>
 <section id="login" class="login"><div class="loginbox"><div class="brand brandLogo"><img src="/ztrend/assets/logo.png?v=20261108" alt="ZTrend" width="128" height="121"></div><div class="crumb">SECURE ADMIN WORKSPACE</div><h1>Welcome back.</h1><p>Sign in with your founder or staff account to manage the live store. Your API connection is configured in Settings.</p><label>API server URL<input id="apiUrl" class="field" value="https://ztrend-backend.onrender.com" placeholder="https://your-api-host.com" autocomplete="url"></label><label>Email address<input id="email" class="field" type="email" autocomplete="username" placeholder="admin@yourstore.com"></label><label>Password<input id="password" class="field" type="password" autocomplete="current-password" placeholder="Your password"></label><button id="loginBtn" class="btn primary">Sign in to workspace →</button><button id="previewBtn" class="btn previewbtn">Explore admin design preview ↗</button><p id="loginError" style="color:#ff9b90"></p><p class="muted">No demo account is provided. Use the founder account configured on your backend.</p></div></section>
 <div id="app" class="app hidden"><aside id="sidebar" class="sidebar"><div class="brand brandLogo"><img src="/ztrend/assets/logo.png?v=20261108" alt="ZTrend" width="128" height="121"></div><div class="eyebrow">WORKSPACE</div><button class="nav active" data-page="overview"><b>◫</b>Overview</button><button class="nav" data-page="orders"><b>▤</b>Orders</button><button class="nav" data-page="products"><b>▧</b>Products</button><button class="nav" data-page="inventory"><b>▦</b>Inventory</button><div class="eyebrow">MANAGEMENT</div><button class="nav" data-page="categories"><b>◈</b>Categories</button><button class="nav" data-page="slides"><b>▣</b>Store slider</button><button class="nav" data-page="purchases"><b>⇄</b>Purchases & Suppliers</button><button class="nav" data-page="accounts"><b>₹</b>Accounts & GST</button><button class="nav" data-page="customers"><b>♧</b>Customers & CRM</button><button class="nav" data-page="marketing"><b>◇</b>Marketing & Coupons</button><button class="nav" data-page="social"><b>◎</b>Social Media</button><button class="nav" data-page="ai"><b>✧</b>AI Studio</button><div class="eyebrow">INSIGHTS & SYSTEM</div><button class="nav" data-page="reports"><b>▥</b>Reports</button><button class="nav" data-page="settings"><b>⚙</b>Settings</button><div class="sidefoot">Connected workspace<br><strong id="userEmail" style="color:#dce9df">—</strong><br><button id="logoutBtn" class="btn" style="margin-top:12px">Sign out</button></div></aside>
@@ -1368,11 +1371,14 @@ footer .brand.brandLogo{width:160px!important;height:66px!important;min-height:6
 footer .brand.brandLogo img{width:155px!important;height:62px!important;max-width:155px!important;max-height:62px!important;}
 .loginbox .brand.brandLogo{width:100%!important;height:112px!important;min-height:112px!important;margin:0 auto 12px!important;}
 .loginbox .brand.brandLogo img{width:280px!important;height:108px!important;max-width:100%!important;max-height:108px!important;}
-/* Sidebar brand: 140px centered logo with no extra vertical spacing */
+/* Compact header spacing; crop transparent logo canvas and align workspace content */
 .sidebar{padding-top:0!important}
-.sidebar .brand.brandLogo{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:140px!important;min-height:140px!important;max-height:140px!important;flex:0 0 140px!important;margin:0!important;padding:0!important;overflow:hidden!important}
-.sidebar .brand.brandLogo img{display:block!important;width:140px!important;height:140px!important;max-width:140px!important;max-height:140px!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important}
+.sidebar .brand.brandLogo{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:84px!important;min-height:84px!important;max-height:84px!important;flex:0 0 84px!important;margin:0!important;padding:0!important;overflow:hidden!important}
+.sidebar .brand.brandLogo img{display:block!important;width:140px!important;height:140px!important;max-width:140px!important;max-height:140px!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important;clip-path:inset(22% 0 22% 0)!important}
 .sidebar>.eyebrow:first-of-type{padding-top:0!important;margin-top:0!important}
+.main{padding-top:8px!important}
+.main>.actions{margin-bottom:8px!important}
+.previewbar{margin-top:0!important;margin-bottom:10px!important}
 </style>`;
  $('#content').innerHTML=style+demoBar+html;
 }let slideRows=[];
