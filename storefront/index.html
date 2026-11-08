@@ -153,6 +153,13 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
 #categories .cat img{display:block!important;width:88px!important;height:88px!important;object-fit:cover!important;border-radius:50%!important;border:2px solid #fff!important;box-shadow:0 0 0 1.5px #285a42,0 4px 14px #173b2820!important}
 #categories .cat span{font-size:11px!important;font-weight:650!important}
 @media(max-width:760px){#categories .cat img{width:62px!important;height:62px!important}#categories .cat span{font-size:9px!important}}
+</style><style id="ztrend-category-carousel-fix">
+#categories{overflow:visible!important}
+#categories #categoryCatalog{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;overscroll-behavior-x:contain!important;touch-action:pan-x pan-y!important;pointer-events:auto!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important;max-width:100%!important}
+#categories #categoryCatalog::-webkit-scrollbar{display:none!important}
+#categories #categoryCatalog>.cat{display:flex!important;flex-shrink:0!important;scroll-snap-align:start!important}
+@media(max-width:760px){#categories #categoryCatalog>.cat{flex:0 0 calc((100% - 30px)/4)!important;width:calc((100% - 30px)/4)!important;min-width:calc((100% - 30px)/4)!important;max-width:calc((100% - 30px)/4)!important}}
+@media(min-width:761px){#categories #categoryCatalog>.cat{flex:0 0 calc((100% - 90px)/6)!important;width:calc((100% - 90px)/6)!important;min-width:calc((100% - 90px)/6)!important;max-width:calc((100% - 90px)/6)!important}}
 </style></head><body><div class="topnote">Complimentary shipping on orders over ₹1,999 · Thoughtfully selected, always</div>
 <div class="store" id="storeView">
 <header class="sitehead"><div class="brand brandLogo"><img src="../assets/logo.png?v=20261108" alt="ZTrend" width="128" height="121"></div><nav class="navlinks"><a href="#categories">Categories</a><a href="#new">New Arrivals</a><a href="#edit">Collections</a><a href="#offers">Offers</a><a href="#newsletter">About</a></nav><label class="searchbox"><span>⌕</span><input id="desktopSearch" type="search" placeholder="Search products, collections..." aria-label="Search products"></label><div class="headactions"><button class="iconbtn" aria-label="Wishlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 10.1-8.8 10.1S3.2 13.9 3.2 8.7A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6Z"/></svg></button><button class="iconbtn" aria-label="Cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.5L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg><i class="count">2</i></button><button class="iconbtn" aria-label="Profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></button></div></header>
@@ -226,5 +233,15 @@ fetch('https://ztrend-backend.onrender.com/api/categories').then(r=>{if(!r.ok)th
 {name:'Jackets',imageUrl:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&auto=format&fit=crop&q=85'},
 {name:'Joggers',imageUrl:'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&auto=format&fit=crop&q=85'}];
 host.innerHTML=defaults.map(x=>'<a class="cat" href="#new" aria-label="'+esc(x.name)+'"><img src="'+esc(x.imageUrl)+'" alt="'+esc(x.name)+'" loading="lazy"><span>'+esc(x.name)+'</span></a>').join('')});
+})();
+</script><script id="ztrend-category-carousel-motion">
+(()=>{const init=()=>{const rail=document.getElementById('categoryCatalog');if(!rail||rail.dataset.carouselReady)return;rail.dataset.carouselReady='1';let timer=null,paused=false;
+const step=()=>{const first=rail.querySelector('.cat');if(!first)return;const gap=parseFloat(getComputedStyle(rail).gap)||0;const max=rail.scrollWidth-rail.clientWidth;if(max<4)return;if(rail.scrollLeft>=max-3){rail.scrollTo({left:0,behavior:'smooth'});return}rail.scrollBy({left:first.getBoundingClientRect().width+gap,behavior:'smooth'});};
+const start=()=>{clearInterval(timer);timer=setInterval(()=>{if(!paused&&rail.scrollWidth>rail.clientWidth+4)step()},2800)};
+['touchstart','pointerdown','mouseenter','focusin'].forEach(e=>rail.addEventListener(e,()=>{paused=true;clearInterval(timer)} ,{passive:true}));
+['touchend','pointerup','mouseleave','focusout'].forEach(e=>rail.addEventListener(e,()=>{paused=false;start()},{passive:true}));
+start();};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+const target=document.getElementById('categoryCatalog');if(target)new MutationObserver(()=>{const r=document.getElementById('categoryCatalog');if(r){r.dataset.carouselReady='';init()}}).observe(target,{childList:true});
 })();
 </script></body></html>
