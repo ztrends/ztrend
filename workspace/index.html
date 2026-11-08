@@ -1383,9 +1383,7 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
  $('#content').innerHTML=style+demoBar+html;
 }let slideRows=[];
 function sampleSlides(){return [
- {id:'sample-1',title:'The new season',subtitle:'Everyday pieces, considered design.',mediaType:'IMAGE',mediaUrl:'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600',ctaLabel:'Explore collection',ctaUrl:'#new',position:1,isActive:true},
- {id:'sample-2',title:'Modern essentials',subtitle:'Find your everyday favourites.',mediaType:'IMAGE',mediaUrl:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600',ctaLabel:'Shop now',ctaUrl:'#new',position:2,isActive:true},
- {id:'sample-3',title:'Made to move',subtitle:'A closer look at the latest edit.',mediaType:'VIDEO',mediaUrl:'https://videos.pexels.com/video-files/853889/853889-hd_1920_1080_25fps.mp4',ctaLabel:'Discover more',ctaUrl:'#new',position:3,isActive:false}
+ {id:'sample-1',title:'The new season',subtitle:'Premium styles. Everyday essentials, thoughtfully selected.',mediaType:'IMAGE',mediaUrl:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1800&auto=format&fit=crop&q=85',ctaLabel:'Explore collection',ctaUrl:'#new',position:1,isActive:true}
 ]}
 async function loadSlides(){
  if(previewMode){slideRows=JSON.parse(localStorage.getItem('ztrend_preview_slides')||'null')||sampleSlides();renderSlides();return}
