@@ -1484,13 +1484,7 @@ function openProduct(id){
  };
 }
 function editProduct(id){openProduct(id)}
-function openCategory(){
- $('#modalTitle').textContent='Add category';
- $('#modalBody').innerHTML=`<div class="formgrid"><label class="wide">Category name<input id="cfName" class="field" placeholder="e.g. Clothing"></label><label class="wide">URL slug<input id="cfSlug" class="field" placeholder="clothing"></label></div><div class="modalfoot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="saveCategoryBtn">Save category</button></div>`;
- $('#modalBack').classList.remove('hidden');
- $('#cfName').oninput=()=>$('#cfSlug').value=$('#cfName').value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
- $('#saveCategoryBtn').onclick=async()=>{const name=$('#cfName').value.trim(),slug=$('#cfSlug').value.trim();if(name.length<2||!slug){toast('Enter a valid category name');return}const b=$('#saveCategoryBtn');b.disabled=true;b.textContent='Saving…';try{await api('/categories',{method:'POST',body:JSON.stringify({name,slug})});closeModal();toast('Category created');await loadCategories()}catch(e){toast(e.message);b.disabled=false;b.textContent='Save category'}};
-}
+/* Category editor is defined above with full add/edit/image/order/visibility support. */
 
 function logout(){previewMode=false;token='';user=null;localStorage.removeItem('ztrend_token');showLogin()}
 $('#loginBtn').onclick=login;$('#previewBtn').onclick=enterPreview;$('#password').addEventListener('keydown',e=>{if(e.key==='Enter')login()});$('#logoutBtn').onclick=logout;$('#mobileLogout').onclick=logout;$('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');$('#themeToggle').onclick=()=>applyTheme(document.body.dataset.theme==='dark'?'light':'dark');$('#refreshBtn').onclick=()=>navigate(page);$('#quickAdd').onclick=()=>openProduct();$('#modalClose').onclick=closeModal;$('#modalBack').onclick=e=>{if(e.target.id==='modalBack')closeModal()};document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>navigate(n.dataset.page));
