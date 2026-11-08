@@ -110,6 +110,19 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
  .mobilehead{height:66px!important;min-height:66px!important}
  .mobilehead button{width:36px!important;height:40px!important}
 }
+</style><style id="ztrend-hero-responsive-dimensions">
+/* Store hero: desktop 3:1 banner, compact mobile banner */
+@media(min-width:761px){
+  #storeHero.hero{width:calc(100% - 96px)!important;max-width:1440px!important;aspect-ratio:3/1!important;height:auto!important;min-height:0!important;max-height:none!important;margin:24px auto 0!important}
+  #storeHero .heroCopy{padding:clamp(32px,4.5vw,64px) 8%!important}
+}
+@media(max-width:760px){
+  #storeHero.hero{width:calc(100% - 24px)!important;aspect-ratio:auto!important;height:clamp(240px,66.67vw,280px)!important;min-height:240px!important;max-height:280px!important;margin:12px auto 0!important;align-items:end!important}
+  #storeHero .heroCopy{padding:20px 20px 24px!important;max-width:78%!important}
+  #storeHero .hero h1{font-size:clamp(25px,7vw,34px)!important;letter-spacing:-1.4px!important;margin:9px 0!important}
+  #storeHero .hero p{font-size:11px!important;line-height:1.5!important;max-width:100%!important;margin:7px 0!important}
+  #storeHero .primary{padding:10px 14px!important;font-size:9px!important;margin-top:8px!important}
+}
 </style></head><body><div class="topnote">Complimentary shipping on orders over ₹1,999 · Thoughtfully selected, always</div>
 <div class="store" id="storeView">
 <header class="sitehead"><div class="brand brandLogo"><img src="../assets/logo.png?v=20261108" alt="ZTrend" width="128" height="121"></div><nav class="navlinks"><a href="#categories">Categories</a><a href="#new">New Arrivals</a><a href="#edit">Collections</a><a href="#offers">Offers</a><a href="#newsletter">About</a></nav><label class="searchbox"><span>⌕</span><input id="desktopSearch" type="search" placeholder="Search products, collections..." aria-label="Search products"></label><div class="headactions"><button class="iconbtn" aria-label="Wishlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 10.1-8.8 10.1S3.2 13.9 3.2 8.7A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6Z"/></svg></button><button class="iconbtn" aria-label="Cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.5L22 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="18" cy="20" r="1.2"/></svg><i class="count">2</i></button><button class="iconbtn" aria-label="Profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></button></div></header>
@@ -163,8 +176,8 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
   };
   show();if(list.length>1)setInterval(show,6500);
  };
- const local=()=>{try{const x=JSON.parse(localStorage.getItem('ztrend_preview_slides')||'null');if(x?.length)apply(x)}catch{}};
- local();
- fetch(api).then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(d.slides?.length)apply(d.slides)}).catch(()=>{});
+ const local=()=>{try{const raw=localStorage.getItem('ztrend_preview_slides');if(raw!==null){const x=JSON.parse(raw);if(Array.isArray(x)&&x.length){apply(x);return true}}}catch{}return false};
+ const hasLocalPreview=local();
+ fetch(api).then(r=>r.ok?r.json():Promise.reject()).then(d=>{if(!hasLocalPreview&&d.slides?.length)apply(d.slides);else if(!hasLocalPreview&&!d.slides?.length)apply([{id:'ztrend-sample-banner',title:'The new season',subtitle:'Premium styles. Everyday essentials, thoughtfully selected.',mediaType:'IMAGE',mediaUrl:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1800&auto=format&fit=crop&q=85',ctaLabel:'Explore collection',ctaUrl:'#new',position:1,isActive:true}])}).catch(()=>{if(!hasLocalPreview)apply([{id:'ztrend-sample-banner',title:'The new season',subtitle:'Premium styles. Everyday essentials, thoughtfully selected.',mediaType:'IMAGE',mediaUrl:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1800&auto=format&fit=crop&q=85',ctaLabel:'Explore collection',ctaUrl:'#new',position:1,isActive:true}])});
 })();
 </script></body></html>
