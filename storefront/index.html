@@ -50,6 +50,15 @@ footer .brand.brandLogo img{width:155px!important;height:62px!important;max-widt
 .sitehead .headactions{grid-column:4!important;grid-row:1!important;gap:12px!important}
 @media(max-width:1100px) and (min-width:761px){.sitehead{grid-template-columns:145px minmax(260px,1fr) minmax(180px,230px) auto!important;gap:12px!important;padding:0 2.5%!important}.sitehead .navlinks{gap:11px!important}.sitehead .navlinks a{font-size:10px!important}.sitehead .brand.brandLogo{width:140px!important}.sitehead .brand.brandLogo img{width:138px!important}}
 @media(max-width:760px){.sitehead{display:none!important}.mobilehead{display:flex!important}.mobilehead .brand.brandLogo{width:150px!important;height:58px!important;min-height:58px!important;flex:0 0 150px!important;position:absolute!important;left:50%!important;transform:translateX(-50%)!important;justify-content:center!important;overflow:visible!important}.mobilehead .brand.brandLogo img{width:145px!important;height:58px!important;max-width:145px!important;max-height:58px!important;object-fit:contain!important;object-position:center!important}.mobileSearch{display:flex!important;width:calc(100% - 28px)!important;margin:10px 14px 0!important;height:44px!important}.mobileSearch .searchbox{width:100%!important;height:44px!important}.mobileMenu{display:none;position:absolute;z-index:14;top:130px;left:14px;right:14px;padding:10px;background:#fbfaf6;border:1px solid #e2e8df;border-radius:16px;box-shadow:0 16px 38px #183b2c1c;flex-direction:column}.mobileMenu.open{display:flex}.mobileMenu a{padding:13px 12px;color:#294638;text-decoration:none;font-size:13px;border-bottom:1px solid #e8ece5}.mobileMenu a:last-child{border-bottom:0}}
+</style><style id="ztrend-mobile-menu-visibility-fix">
+/* Mobile drawer must never render as a second desktop navigation row */
+#mobileMenu.mobileMenu{display:none!important}
+@media(max-width:760px){
+  #mobileMenu.mobileMenu.open{display:flex!important}
+  #mobileMenu.mobileMenu{position:absolute;z-index:80;top:130px;left:14px;right:14px;padding:10px;background:#fbfaf6;border:1px solid #e2e8df;border-radius:16px;box-shadow:0 16px 38px #183b2c1c;flex-direction:column}
+  #mobileMenu.mobileMenu a{display:block;padding:13px 12px;color:#294638;text-decoration:none;font-size:13px;border-bottom:1px solid #e8ece5}
+  #mobileMenu.mobileMenu a:last-child{border-bottom:0}
+}
 </style><style id="ztrend-store-interactions">
 :root{--store-deep:#073b2b;--store-green:#0b513b;--store-mint:#cfe5d4}
 .sitehead,.mobilehead{background:#073b2b!important;color:#f7fff9!important;border-color:#ffffff20!important;z-index:50}
